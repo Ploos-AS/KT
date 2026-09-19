@@ -1,0 +1,15 @@
+#include "kt/terminal.h"
+#include "kt/terminal_screen.h"
+#include <assert.h>
+int main(void){
+ kt_term_cell cells[24]; kt_term_screen s; kt_term t;
+ static const uint8_t input[]={'A',0x1b,'[','2',';','3','H','X',0x1b,'[','2','J','Z'};
+ assert(kt_term_screen_init(&s,8,3,cells,24)==0);
+ kt_term_init(&t,kt_term_screen_ops(),&s);
+ kt_term_feed(&t,input,7); /* A + CUP 2;3 */
+ assert(cells[0].ch=='A'); assert(s.x==2u&&s.y==1u);
+ kt_term_feed(&t,input+7,1); assert(cells[10].ch=='X');
+ kt_term_feed(&t,input+8,5); assert(s.x==0u&&s.y==0u); assert(cells[0].ch==' ');
+ kt_term_feed(&t,input+13,1); assert(cells[0].ch=='Z');
+ return 0;
+}
