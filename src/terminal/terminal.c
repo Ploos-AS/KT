@@ -40,7 +40,9 @@ void kt_term_feed(kt_term *t,const uint8_t *d,size_t l){size_t i;if(!t||!d||!t->
   if(t->parser_state==ST_CSI){
    if(ch>='0'&&ch<='9'){t->csi_value=(uint16_t)(t->csi_value*10u+(ch-'0'));t->csi_have_value=1u;continue;}
    if(ch==';'){csi_push(t);continue;}
-   csi_push(t);dispatch(t,ch);t->parser_state=ST_GROUND;continue;
+   if(ch>=0x40u&&ch<=0x7eu){csi_push(t);dispatch(t,ch);t->parser_state=ST_GROUND;continue;}
+   /* Malformed/unsupported CSI: abandon it without leaking parser state. */
+   t->parser_state=ST_GROUND;t->csi_count=0u;t->csi_have_value=0u;t->csi_value=0u;continue;
   }
   if(ch==0x1bu){t->parser_state=ST_ESC;continue;}
   switch(ch){case '\r':if(t->ops->carriage_return)t->ops->carriage_return(t->ctx);break;case '\n':if(t->ops->line_feed)t->ops->line_feed(t->ctx);break;case '\b':if(t->ops->backspace)t->ops->backspace(t->ctx);break;case '\a':if(t->ops->bell)t->ops->bell(t->ctx);break;default:if(ch>=0x20u&&t->ops->put_cell)t->ops->put_cell(t->ctx,ch,&t->attr);break;}
