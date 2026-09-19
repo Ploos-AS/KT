@@ -11,6 +11,29 @@ int main(void){
  kt_term_feed(&t,input+7,1); assert(cells[10].ch=='X');
  kt_term_feed(&t,input+8,5); assert(s.x==0u&&s.y==0u); assert(cells[0].ch==' ');
  kt_term_feed(&t,input+13,1); assert(cells[0].ch=='Z');
+ /* Exact M2.17 golden vectors through the C parser + screen model. */
+ kt_term_screen_clear(&s);
+ { static const uint8_t v[]={'A','B','\r','\n','C'};
+   kt_term_feed(&t,v,sizeof v);
+   assert(cells[0].ch=='A' && cells[1].ch=='B' && cells[8].ch=='C');
+ }
+ kt_term_screen_clear(&s);
+ { static const uint8_t a[]={0x1b}, b[]={'[','2',';'}, csi[]={'3','H','X'};
+   kt_term_feed(&t,a,sizeof a); kt_term_feed(&t,b,sizeof b); kt_term_feed(&t,csi,sizeof csi);
+   assert(cells[10].ch=='X');
+ }
+ kt_term_screen_clear(&s);
+ { static const uint8_t v[]={'A',0x1b,'[','2','C','B'};
+   kt_term_feed(&t,v,sizeof v);
+   assert(cells[0].ch=='A' && cells[3].ch=='B');
+ }
+ kt_term_screen_clear(&s);
+ { static const uint8_t v[]={0x1b,'[','1',';','3','1',';','4','4','m','X',0x1b,'[','7','m','Y',0x1b,'[','0','m','Z'};
+   kt_term_feed(&t,v,sizeof v);
+   assert(cells[0].ch=='X' && cells[0].attr.fg==1u && cells[0].attr.bg==4u && (cells[0].attr.flags&KT_TERM_ATTR_BOLD));
+   assert(cells[1].ch=='Y' && (cells[1].attr.flags&KT_TERM_ATTR_INVERSE));
+   assert(cells[2].ch=='Z' && cells[2].attr.fg==7u && cells[2].attr.bg==0u && cells[2].attr.flags==0u);
+ }
  /* ED0 clears cursor through end; ED1 clears start through cursor. */
  kt_term_screen_clear(&s);
  { static const uint8_t fill[]="abcdefghijklmnopqrstuvwx";
