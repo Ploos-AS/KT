@@ -48,3 +48,9 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_m2_9_kscript.py' -v
       - name: Test test_machine
         run: python -m unittest discover -s tests -p 'test_machine.py' -v
+      - name: Test M2.18 portable C terminal core
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c tests/test_m2_18_terminal_core.c \
+            -o /tmp/test_m2_18_terminal_core
+          /tmp/test_m2_18_terminal_core
