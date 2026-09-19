@@ -1,14 +1,14 @@
-# K8T
+# KT
 
-K8T is a retro 8/16-bit communications terminal and BBS computer.
+KT is a retro 8/16-bit communications terminal and BBS computer.
 
-Its primary purpose is to cultivate BBSing: a dedicated multitasking BBS computer combining classic serial communications, a first-class local terminal and modern Ethernet services. K8T prioritizes BBS capability, 24/7 reliability, communications throughput and practical BOM cost; K8 and K16 cover the educational-computer role.
+Its primary purpose is to cultivate BBSing: a dedicated multitasking BBS computer combining classic serial communications, a first-class local terminal and modern Ethernet services. KT prioritizes BBS capability, 24/7 reliability, communications throughput and practical BOM cost; K8 and K16 cover the educational-computer role.
 
 ## M0 goals
 
 M0 defines the machine and software contracts before implementation begins.
 
-K8T is specified around:
+KT is specified around:
 
 - a WDC W65C265S 8/16-bit processor, independent of the K8 computer
 - an educational and maker-friendly external bus architecture
@@ -19,20 +19,20 @@ K8T is specified around:
 - internal SSD storage plus removable SD
 - text-first video with strong ANSI support
 - keyboard and mouse, including terminal copy/paste
-- preemptive multitasking in K8T-OS
+- preemptive multitasking in KT-OS
 - a shared BBS core for users, messages and files
 - per-area publication and access-control policy
 - FidoNet/BinkP, Telnet, Gopher, HTTP, IRC, RSS and Atom
 
-The design rule is simple: K8T may use modern components where useful, but it must remain a real, understandable retro computer built around the W65C265S. No hidden Linux/ARM system is allowed to implement the machine's core services.
+The design rule is simple: KT may use modern components where useful, but it must remain a real, understandable retro computer built around the W65C265S. No hidden Linux/ARM system is allowed to implement the machine's core services.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Status
 
-**M2 — W65C265S CPU and memory subsystem: in progress (M2.0 complete)**
+**M2 — W65C265S CPU and memory subsystem: in progress (M2.0–M2.17 complete)**
 
-W65C265S is the selected baseline CPU. M2.1 defines the scheduler/context ABI.
+W65C265S is the selected baseline CPU. M2.0–M2.17 freeze the platform, OS/BBS contracts and portable terminal conformance foundation. Next is **M2.18 — portable C terminal-core ABI and reference implementation skeleton**.
 
 ## Manufacturing
 
