@@ -97,6 +97,9 @@ int main(void)
 
     /* CP437 is a byte-preserving profile at the core boundary; glyph mapping
        belongs to the renderer so classic BBS bytes remain lossless. */
+    kt_term_reset(&term);
+    assert(term.profile==KT_TERM_PROFILE_PETSCII);
+
     kt_term_set_profile(&term,KT_TERM_PROFILE_CP437);
     { static const uint8_t box[]={0xDAu,0xC4u,0xBFu}; size_t before=f.count;
       kt_term_feed(&term,box,sizeof box);
