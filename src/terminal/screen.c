@@ -19,3 +19,19 @@ static void erase(void*p,uint8_t m){kt_term_screen*s=p;size_t i,cur=(size_t)s->y
 }
 static const kt_term_ops ops={put,cr,lf,bs,bell,move,pos,erase};
 const kt_term_ops *kt_term_screen_ops(void){return &ops;}
+
+uint32_t kt_term_decode_codepoint(uint8_t profile,uint8_t ch){
+ if(profile==KT_TERM_PROFILE_CP437){
+  switch(ch){
+   case 0xB3u:return 0x2502u; case 0xC4u:return 0x2500u;
+   case 0xDAu:return 0x250Cu; case 0xBFu:return 0x2510u;
+   case 0xC0u:return 0x2514u; case 0xD9u:return 0x2518u;
+   case 0xC3u:return 0x251Cu; case 0xB4u:return 0x2524u;
+   case 0xC2u:return 0x252Cu; case 0xC1u:return 0x2534u;
+   case 0xC5u:return 0x253Cu; default:break;
+  }
+ }
+ /* ASCII is profile-invariant. PETSCII printable remapping expands later. */
+ if(ch<0x80u)return (uint32_t)ch;
+ return 0xFFFDu;
+}
