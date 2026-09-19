@@ -54,3 +54,9 @@ jobs:
             src/terminal/terminal.c tests/test_m2_18_terminal_core.c \
             -o /tmp/test_m2_18_terminal_core
           /tmp/test_m2_18_terminal_core
+      - name: Test M2.19 portable terminal screen
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c src/terminal/screen.c tests/test_m2_19_terminal_screen.c \
+            -o /tmp/test_m2_19_terminal_screen
+          /tmp/test_m2_19_terminal_screen
