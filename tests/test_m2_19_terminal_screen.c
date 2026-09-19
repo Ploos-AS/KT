@@ -11,5 +11,14 @@ int main(void){
  kt_term_feed(&t,input+7,1); assert(cells[10].ch=='X');
  kt_term_feed(&t,input+8,5); assert(s.x==0u&&s.y==0u); assert(cells[0].ch==' ');
  kt_term_feed(&t,input+13,1); assert(cells[0].ch=='Z');
+ /* Fill four 8-column lines into a 3-line screen: wrapping must scroll. */
+ kt_term_screen_clear(&s);
+ { static const uint8_t lines[]="11111111222222223333333344444444";
+   kt_term_feed(&t,lines,sizeof lines-1u);
+   assert(cells[0].ch=='3');
+   assert(cells[8].ch=='4');
+   assert(cells[16].ch==' ');
+   assert(s.x==0u && s.y==2u);
+ }
  return 0;
 }
