@@ -83,6 +83,27 @@ int main(void)
     kt_term_reset(&term);
     assert(term.attr.fg==7u && term.attr.bg==0u && term.attr.flags==0u);
     assert(term.parser_state==0u);
+    /* M2.17 PETSCII baseline: clear/home/reverse and printable A. */
+    kt_term_set_profile(&term,KT_TERM_PROFILE_PETSCII);
+    { static const uint8_t p[]={0x93u,0x13u,0x12u,0x41u,0x92u};
+      size_t before=f.count;
+      kt_term_feed(&term,p,sizeof p);
+      assert(f.erases==2u && f.erase_mode==2u);
+      assert(f.positions==2u && f.row==1u && f.col==1u);
+      assert(f.count==before+1u && f.cells[f.count-1u]=='A');
+      assert((f.attrs[f.count-1u].flags & KT_TERM_ATTR_INVERSE)!=0u);
+      assert((term.attr.flags & KT_TERM_ATTR_INVERSE)==0u);
+    }
+
+    /* CP437 is a byte-preserving profile at the core boundary; glyph mapping
+       belongs to the renderer so classic BBS bytes remain lossless. */
+    kt_term_set_profile(&term,KT_TERM_PROFILE_CP437);
+    { static const uint8_t box[]={0xDAu,0xC4u,0xBFu}; size_t before=f.count;
+      kt_term_feed(&term,box,sizeof box);
+      assert(f.count==before+3u);
+      assert(f.cells[before]==0xDAu && f.cells[before+1u]==0xC4u && f.cells[before+2u]==0xBFu);
+    }
+
     kt_term_feed(NULL,basic,sizeof basic);
     kt_term_feed(&term,NULL,sizeof basic);
     return 0;
