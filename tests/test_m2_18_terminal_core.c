@@ -107,6 +107,14 @@ int main(void)
       assert(f.cells[before]==0xDAu && f.cells[before+1u]==0xC4u && f.cells[before+2u]==0xBFu);
     }
 
+    /* M2.17: malformed CSI must recover to ground state safely. */
+    kt_term_set_profile(&term,KT_TERM_PROFILE_ANSI);
+    { static const uint8_t bad[]={0x1bu,'[','1',0x01u,'Q'}; size_t before=f.count;
+      kt_term_feed(&term,bad,sizeof bad);
+      assert(term.parser_state==0u);
+      assert(f.count==before+1u && f.cells[f.count-1u]=='Q');
+    }
+
     kt_term_feed(NULL,basic,sizeof basic);
     kt_term_feed(&term,NULL,sizeof basic);
     return 0;
