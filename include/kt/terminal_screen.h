@@ -12,4 +12,8 @@ typedef struct kt_term_screen {
 int kt_term_screen_init(kt_term_screen *,uint16_t,uint16_t,kt_term_cell *,size_t);
 void kt_term_screen_clear(kt_term_screen *);
 const kt_term_ops *kt_term_screen_ops(void);
+
+/* Renderer-facing Unicode scalar for a stored byte/profile pair.
+   CP437 currently guarantees the M2.17 box-drawing corpus subset. */
+uint32_t kt_term_decode_codepoint(uint8_t profile,uint8_t ch);
 #endif
