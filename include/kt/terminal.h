@@ -9,41 +9,30 @@ extern "C" {
 #endif
 
 #define KT_TERM_ABI_VERSION 1u
+#define KT_TERM_CSI_MAX_PARAMS 8u
 
-typedef struct kt_term_attr {
-    uint8_t fg;
-    uint8_t bg;
-    uint8_t flags;
-} kt_term_attr;
-
+typedef struct kt_term_attr { uint8_t fg, bg, flags; } kt_term_attr;
 enum {
-    KT_TERM_ATTR_BOLD      = 1u << 0,
-    KT_TERM_ATTR_UNDERLINE = 1u << 1,
-    KT_TERM_ATTR_BLINK     = 1u << 2,
-    KT_TERM_ATTR_INVERSE   = 1u << 3
+    KT_TERM_ATTR_BOLD=1u<<0, KT_TERM_ATTR_UNDERLINE=1u<<1,
+    KT_TERM_ATTR_BLINK=1u<<2, KT_TERM_ATTR_INVERSE=1u<<3
 };
-
 typedef struct kt_term_ops {
-    void (*put_cell)(void *ctx, uint8_t ch, const kt_term_attr *attr);
-    void (*carriage_return)(void *ctx);
-    void (*line_feed)(void *ctx);
-    void (*backspace)(void *ctx);
-    void (*bell)(void *ctx);
+    void (*put_cell)(void *, uint8_t, const kt_term_attr *);
+    void (*carriage_return)(void *); void (*line_feed)(void *);
+    void (*backspace)(void *); void (*bell)(void *);
+    void (*cursor_move)(void *, int16_t, int16_t);
+    void (*cursor_position)(void *, uint16_t, uint16_t);
+    void (*erase_display)(void *, uint8_t);
 } kt_term_ops;
-
 typedef struct kt_term {
-    const kt_term_ops *ops;
-    void *ctx;
-    kt_term_attr attr;
-    uint8_t parser_state;
+    const kt_term_ops *ops; void *ctx; kt_term_attr attr;
+    uint8_t parser_state, csi_count, csi_have_value;
+    uint16_t csi_params[KT_TERM_CSI_MAX_PARAMS], csi_value;
 } kt_term;
-
-void kt_term_init(kt_term *term, const kt_term_ops *ops, void *ctx);
-void kt_term_reset(kt_term *term);
-void kt_term_feed(kt_term *term, const uint8_t *data, size_t len);
-
+void kt_term_init(kt_term *, const kt_term_ops *, void *);
+void kt_term_reset(kt_term *);
+void kt_term_feed(kt_term *, const uint8_t *, size_t);
 #ifdef __cplusplus
 }
 #endif
-
 #endif
