@@ -11,6 +11,11 @@ static void bs(void*p){kt_term_screen*s=p;if(s->x)s->x--;}
 static void bell(void*p){(void)p;}
 static void move(void*p,int16_t dx,int16_t dy){kt_term_screen*s=p;int32_t x=(int32_t)s->x+dx,y=(int32_t)s->y+dy;if(x<0)x=0;if(y<0)y=0;if(x>=s->width)x=s->width-1;if(y>=s->height)y=s->height-1;s->x=(uint16_t)x;s->y=(uint16_t)y;}
 static void pos(void*p,uint16_t r,uint16_t c){kt_term_screen*s=p;if(!r)r=1;if(!c)c=1;s->y=(uint16_t)((r>s->height?s->height:r)-1u);s->x=(uint16_t)((c>s->width?s->width:c)-1u);}
-static void erase(void*p,uint8_t m){kt_term_screen*s=p;if(m==2u)kt_term_screen_clear(s);}
+static void blank(kt_term_cell*c){c->ch=' ';c->attr.fg=7u;c->attr.bg=0u;c->attr.flags=0u;}
+static void erase(void*p,uint8_t m){kt_term_screen*s=p;size_t i,cur=(size_t)s->y*s->width+s->x;
+ if(m==0u){for(i=cur;i<s->cell_count;i++)blank(&s->cells[i]);}
+ else if(m==1u){for(i=0;i<=cur&&i<s->cell_count;i++)blank(&s->cells[i]);}
+ else if(m==2u){for(i=0;i<s->cell_count;i++)blank(&s->cells[i]);s->x=0;s->y=0;}
+}
 static const kt_term_ops ops={put,cr,lf,bs,bell,move,pos,erase};
 const kt_term_ops *kt_term_screen_ops(void){return &ops;}
