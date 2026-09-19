@@ -30,9 +30,9 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [ROADMAP.md](ROADMAP.md).
 
 ## Status
 
-**M2 — W65C265S CPU and memory subsystem: in progress (M2.0–M2.17 complete)**
+**M2 — W65C265S CPU and memory subsystem: in progress (M2.0–M2.18 complete)**
 
-W65C265S is the selected baseline CPU. M2.0–M2.17 freeze the platform, OS/BBS contracts and portable terminal conformance foundation. Next is **M2.18 — portable C terminal-core ABI and reference implementation skeleton**.
+W65C265S is the selected baseline CPU. M2.0–M2.18 freeze the platform, OS/BBS contracts, terminal conformance foundation and portable C terminal-core ABI/reference implementation. Next is **M2.19 — portable screen-state/reference renderer boundary**.
 
 ## Manufacturing
 
