@@ -26,8 +26,8 @@ static void dispatch(kt_term *t,uint8_t ch){
  }
 }
 void kt_term_set_profile(kt_term *t,uint8_t p){if(t)t->profile=p;}
-void kt_term_reset(kt_term *t){uint8_t i;if(!t)return;defaults(&t->attr);t->profile=KT_TERM_PROFILE_ANSI;t->parser_state=ST_GROUND;t->csi_count=0;t->csi_have_value=0;t->csi_value=0;for(i=0;i<KT_TERM_CSI_MAX_PARAMS;i++)t->csi_params[i]=0;}
-void kt_term_init(kt_term *t,const kt_term_ops *o,void *x){if(!t)return;t->ops=o;t->ctx=x;kt_term_reset(t);}
+void kt_term_reset(kt_term *t){uint8_t i;if(!t)return;defaults(&t->attr);t->parser_state=ST_GROUND;t->csi_count=0;t->csi_have_value=0;t->csi_value=0;for(i=0;i<KT_TERM_CSI_MAX_PARAMS;i++)t->csi_params[i]=0;}
+void kt_term_init(kt_term *t,const kt_term_ops *o,void *x){if(!t)return;t->ops=o;t->ctx=x;t->profile=KT_TERM_PROFILE_ANSI;kt_term_reset(t);}
 void kt_term_feed(kt_term *t,const uint8_t *d,size_t l){size_t i;if(!t||!d||!t->ops)return;
  for(i=0;i<l;i++){uint8_t ch=d[i];
   if(t->profile==KT_TERM_PROFILE_PETSCII){
