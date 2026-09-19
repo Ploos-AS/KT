@@ -11,6 +11,10 @@ extern "C" {
 #define KT_TERM_ABI_VERSION 1u
 #define KT_TERM_CSI_MAX_PARAMS 8u
 
+#define KT_TERM_PROFILE_ANSI 0u
+#define KT_TERM_PROFILE_CP437 1u
+#define KT_TERM_PROFILE_PETSCII 2u
+
 typedef struct kt_term_attr { uint8_t fg, bg, flags; } kt_term_attr;
 enum {
     KT_TERM_ATTR_BOLD=1u<<0, KT_TERM_ATTR_UNDERLINE=1u<<1,
@@ -26,11 +30,12 @@ typedef struct kt_term_ops {
 } kt_term_ops;
 typedef struct kt_term {
     const kt_term_ops *ops; void *ctx; kt_term_attr attr;
-    uint8_t parser_state, csi_count, csi_have_value;
+    uint8_t parser_state, csi_count, csi_have_value, profile;
     uint16_t csi_params[KT_TERM_CSI_MAX_PARAMS], csi_value;
 } kt_term;
 void kt_term_init(kt_term *, const kt_term_ops *, void *);
 void kt_term_reset(kt_term *);
+void kt_term_set_profile(kt_term *, uint8_t);
 void kt_term_feed(kt_term *, const uint8_t *, size_t);
 #ifdef __cplusplus
 }
