@@ -1,6 +1,6 @@
 # M2.18 — Portable C terminal-core ABI
 
-Status: **REFERENCE SKELETON IMPLEMENTED**
+Status: **IMPLEMENTED / HOST-QUALIFIED**
 
 M2.18 turns the M2.13–M2.17 terminal contracts and conformance corpus into a small, platform-neutral C ABI.
 
@@ -17,9 +17,9 @@ M2.18 turns the M2.13–M2.17 terminal contracts and conformance corpus into a s
 
 The public ABI is declared in `include/kt/terminal.h`.
 
-A frontend supplies a `kt_term_ops` callback table and opaque context. The core accepts input through `kt_term_feed()`. Printable bytes are emitted through `put_cell`; control characters use dedicated cursor callbacks. `kt_term_reset()` restores parser and attribute state.
+A frontend supplies a `kt_term_ops` callback table and opaque context. The core accepts input through `kt_term_feed()`. Printable bytes are emitted through `put_cell`; control characters use dedicated cursor callbacks. `kt_term_reset()` restores parser and attribute state while preserving the selected terminal profile. ANSI is the default profile at initialization.
 
-The initial skeleton deliberately keeps the ABI narrow. ANSI/VT parsing, CP437/PETSCII profiles, geometry, scrollback and transfer engines remain layered features and are expanded against the M2.17 golden corpus rather than being coupled to platform code.
+The ABI remains deliberately narrow. The reference core implements incremental ANSI CSI parsing for CUP/HVP, relative cursor movement, erase-display and the M2.17 SGR baseline. ANSI, byte-preserving CP437 and PETSCII profiles are explicit. PETSCII clear/home/reverse controls are covered by host vectors. Geometry, glyph rendering, scrollback and transfer engines remain platform/layer responsibilities rather than being coupled to the parser.
 
 ## Portability rules
 
@@ -27,4 +27,6 @@ The public header uses C99 fixed-width integer types only. It performs no alloca
 
 ## Acceptance
 
-M2.18 is complete when the ABI/header, reference core skeleton and deterministic host tests compile and exercise reset, printable input and basic control dispatch. The next milestone expands the parser against the M2.17 conformance corpus.
+M2.18 acceptance is satisfied by the ABI/header, portable C reference core and deterministic host test in `tests/test_m2_18_terminal_core.c`. The test covers printable/control dispatch, split CSI parsing, CUP, relative cursor movement, erase-display, SGR attributes/reset, PETSCII baseline controls, byte-preserving CP437 box-drawing input, profile persistence across reset and safe recovery from malformed CSI.
+
+CI compiles the core as strict C99 with `-Wall -Wextra -Werror -pedantic`. The repository-side GitHub API did not expose a status/check result while this milestone was frozen, so the qualification claim here is limited to the implemented deterministic host qualification contract; it does not claim an observed green GitHub Actions run.
