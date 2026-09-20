@@ -31,7 +31,13 @@ uint32_t kt_term_decode_codepoint(uint8_t profile,uint8_t ch){
    case 0xC5u:return 0x253Cu; default:break;
   }
  }
- /* ASCII is profile-invariant. PETSCII printable remapping expands later. */
+ if(profile==KT_TERM_PROFILE_PETSCII){
+  /* PETSCII letters are non-contiguous relative to Unicode/ASCII:
+     $41-$5A are uppercase; $61-$7A are the alternate uppercase range. */
+  if(ch>=0x41u&&ch<=0x5Au)return (uint32_t)ch;
+  if(ch>=0x61u&&ch<=0x7Au)return (uint32_t)(ch-0x20u);
+ }
+ /* ASCII-compatible bytes remain identity-mapped. */
  if(ch<0x80u)return (uint32_t)ch;
  return 0xFFFDu;
 }
