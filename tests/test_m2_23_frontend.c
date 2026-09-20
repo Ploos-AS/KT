@@ -8,13 +8,17 @@ static void cu(void*p,uint16_t x,uint16_t y){sink*s=p;(void)x;(void)y;s->cursor+
 static void ef(void*p){((sink*)p)->end++;}
 static int wr(void*p,const uint8_t*d,size_t n){sink*s=p;if(s->blocked)return 0;memcpy(s->wire+s->n,d,n);s->n+=n;return (int)n;}
 int main(void){
- kt_term_cell cells[4],cache_cells[4];kt_term_screen scr;kt_term_render_cache cache={cache_cells,4,0,0,0,0,0};
+ kt_term_cell cells[4],cache_cells[4];kt_term_screen scr;kt_term_render_cache cache={cache_cells,4,0,0,0,0,0,0};
  kt_term_renderer_ops ro={bf,dc,cu,ef};kt_term_output_ops oo={wr};kt_term_frontend f;sink s={0};
  assert(kt_term_screen_init(&scr,4,1,cells,4)==0);
  assert(kt_term_frontend_init(&f,&scr,KT_TERM_PROFILE_ANSI,&cache,&ro,&s,&oo,&s)==0);
  assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
  s.draw=s.cursor=0;assert(kt_term_frontend_render(&f)==0&&s.draw==0u&&s.cursor==0u);
  scr.cells[2].ch='X';assert(kt_term_frontend_render(&f)==0&&s.draw==1u);
+ s.draw=s.cursor=0;f.profile=KT_TERM_PROFILE_PETSCII;
+ assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
+ s.draw=s.cursor=0;cache.width=2u;
+ assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
  s.draw=s.cursor=0;assert(kt_term_frontend_set_profile(&f,KT_TERM_PROFILE_CP437)==0);
  assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
  s.draw=s.cursor=0;assert(kt_term_frontend_set_profile(&f,KT_TERM_PROFILE_CP437)==0);
