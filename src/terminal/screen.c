@@ -60,3 +60,11 @@ uint32_t kt_term_decode_petscii(uint8_t ch,uint8_t charset){
  if(ch<0x80u)return (uint32_t)ch;
  return 0xFFFDu;
 }
+
+kt_term_glyph kt_term_resolve_glyph(uint8_t profile,uint8_t ch,uint8_t charset){
+ kt_term_glyph g;
+ g.source_byte=ch; g.profile=profile; g.charset=charset;
+ g.codepoint=(profile==KT_TERM_PROFILE_PETSCII)
+  ?kt_term_decode_petscii(ch,charset):kt_term_decode_codepoint(profile,ch);
+ return g;
+}
