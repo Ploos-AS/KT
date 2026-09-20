@@ -9,3 +9,9 @@ The initial implementation exposes `kt_term_decode_codepoint(profile, byte)`. CP
 PETSCII printable decoding now has an explicit first baseline: $41-$5A map to Unicode A-Z, the alternate $61-$7A PETSCII uppercase range also maps to Unicode A-Z, and ASCII-compatible digits/punctuation remain identity-mapped. PETSCII controls remain parser responsibilities rather than renderer glyphs.
 
 Next work expands the renderer contract around PETSCII graphics/shifted character-set semantics without pretending that PETSCII is ASCII or Unicode.
+
+## PETSCII mapping-table policy
+
+PETSCII graphics are represented by explicit byte-indexed tables rather than a growing switch statement. A zero table entry means that the mapping has not yet been qualified and the decoder returns U+FFFD. This makes coverage reviewable and prevents accidental ASCII assumptions.
+
+The first table covers $A0-$BF and currently qualifies $A0-$A6 only. Remaining entries are intentionally unmapped until verified against an authoritative PETSCII character-set reference. The implementation therefore distinguishes known mappings from guesses.
