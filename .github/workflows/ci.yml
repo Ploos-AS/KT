@@ -85,3 +85,11 @@ jobs:
             src/terminal/key_encode.c tests/test_m2_22_key_encode.c \
             -o /tmp/test_m2_22_key_encode
           /tmp/test_m2_22_key_encode
+
+      - name: Test M2.23 portable frontend adapter
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c src/terminal/screen.c src/terminal/renderer.c \
+            src/terminal/event.c src/terminal/key_encode.c src/terminal/frontend.c \
+            tests/test_m2_23_frontend.c -o /tmp/test_m2_23_frontend
+          /tmp/test_m2_23_frontend
