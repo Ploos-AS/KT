@@ -1,4 +1,5 @@
 #include "kt/terminal_event.h"
+#include "kt/terminal_key_encode.h"
 int kt_term_dispatch_event(const kt_term_event*e,const kt_term_input_ops*o,void*c){
  if(!e||!o)return -1;
  switch(e->type){
@@ -17,3 +18,15 @@ static void feed_paste(void*p,const uint8_t*d,uint16_t n){kt_term_feed_adapter*a
 static const kt_term_input_ops feed_ops={feed_byte,feed_paste,0,0,0};
 void kt_term_feed_adapter_init(kt_term_feed_adapter*a,kt_term*t){if(a)a->term=t;}
 const kt_term_input_ops *kt_term_feed_adapter_ops(void){return &feed_ops;}
+
+static void output_key(void*p,uint32_t key,uint8_t mods){
+ kt_term_key_output_adapter*a=p;uint8_t b[20];size_t n;
+ if(!a||!a->output||!a->output->write)return;
+ n=kt_term_encode_key(key,mods,b,sizeof b);
+ if(n)a->output->write(a->output_ctx,b,n);
+}
+static const kt_term_input_ops key_output_ops={0,0,0,output_key,0};
+void kt_term_key_output_adapter_init(kt_term_key_output_adapter*a,const kt_term_output_ops*o,void*c){
+ if(a){a->output=o;a->output_ctx=c;}
+}
+const kt_term_input_ops *kt_term_key_output_adapter_ops(void){return &key_output_ops;}
