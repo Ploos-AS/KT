@@ -154,3 +154,10 @@ jobs:
             src/terminal/display.c tests/test_m2_27_display.c \
             -o /tmp/test_m2_27_display
           /tmp/test_m2_27_display
+
+      - name: Test M2.28 dirty display rows
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/dirty.c tests/test_m2_28_dirty.c \
+            -o /tmp/test_m2_28_dirty
+          /tmp/test_m2_28_dirty
