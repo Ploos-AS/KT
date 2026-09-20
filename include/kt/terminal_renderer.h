@@ -1,12 +1,25 @@
 #ifndef KT_TERMINAL_RENDERER_H
 #define KT_TERMINAL_RENDERER_H
 #include "kt/terminal_screen.h"
+#include "kt/terminal_font.h"
 
 typedef struct kt_term_render_cell {
     uint16_t x, y;
     kt_term_glyph glyph;
     kt_term_attr attr;
 } kt_term_render_cell;
+
+typedef struct kt_term_bitmap_render_cell {
+    kt_term_render_cell cell;
+    kt_term_bitmap_glyph bitmap;
+} kt_term_bitmap_render_cell;
+
+typedef struct kt_term_bitmap_renderer_ops {
+    void (*begin_frame)(void *, uint16_t, uint16_t);
+    void (*draw_bitmap_cell)(void *, const kt_term_bitmap_render_cell *);
+    void (*draw_cursor)(void *, uint16_t, uint16_t);
+    void (*end_frame)(void *);
+} kt_term_bitmap_renderer_ops;
 
 typedef struct kt_term_renderer_ops {
     void (*begin_frame)(void *, uint16_t, uint16_t);
@@ -32,4 +45,7 @@ typedef struct kt_term_render_cache {
 int kt_term_render_incremental(const kt_term_screen *, uint8_t profile,
                                kt_term_render_cache *,
                                const kt_term_renderer_ops *, void *);
+int kt_term_render_bitmap(const kt_term_screen *, uint8_t profile,
+                          const kt_term_font_ops *, void *,
+                          const kt_term_bitmap_renderer_ops *, void *);
 #endif
