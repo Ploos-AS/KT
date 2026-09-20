@@ -93,3 +93,12 @@ jobs:
             src/terminal/event.c src/terminal/key_encode.c src/terminal/frontend.c \
             tests/test_m2_23_frontend.c -o /tmp/test_m2_23_frontend
           /tmp/test_m2_23_frontend
+
+      - name: Test M2.23 cross-platform adapter boundary
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c src/terminal/screen.c src/terminal/renderer.c \
+            src/terminal/event.c src/terminal/key_encode.c src/terminal/frontend.c \
+            src/terminal/platform.c tests/test_m2_23_platform.c \
+            -o /tmp/test_m2_23_platform
+          /tmp/test_m2_23_platform
