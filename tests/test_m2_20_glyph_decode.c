@@ -27,5 +27,9 @@ int main(void){
  assert(kt_term_decode_petscii(0xBFu,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x259Au);
  assert(kt_term_decode_petscii(0xA1u,KT_TERM_PETSCII_LOWER_UPPER)==0xFFFDu);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_CP437,0xFFu)==0xFFFDu);
+ { kt_term_glyph g=kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,0xA8u,KT_TERM_PETSCII_UPPER_GRAPHICS);
+   assert(g.codepoint==0x1FB8Fu && g.source_byte==0xA8u);
+   assert(g.profile==KT_TERM_PROFILE_PETSCII && g.charset==KT_TERM_PETSCII_UPPER_GRAPHICS);
+ }
  return 0;
 }
