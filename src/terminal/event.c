@@ -11,3 +11,9 @@ int kt_term_dispatch_event(const kt_term_event*e,const kt_term_input_ops*o,void*
  }
  return 0;
 }
+
+static void feed_byte(void*p,uint8_t b){kt_term_feed_adapter*a=p;if(a&&a->term)kt_term_feed(a->term,&b,1u);}
+static void feed_paste(void*p,const uint8_t*d,uint16_t n){kt_term_feed_adapter*a=p;if(a&&a->term&&d)kt_term_feed(a->term,d,n);}
+static const kt_term_input_ops feed_ops={feed_byte,feed_paste,0,0,0};
+void kt_term_feed_adapter_init(kt_term_feed_adapter*a,kt_term*t){if(a)a->term=t;}
+const kt_term_input_ops *kt_term_feed_adapter_ops(void){return &feed_ops;}
