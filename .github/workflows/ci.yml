@@ -67,3 +67,10 @@ jobs:
             src/terminal/terminal.c src/terminal/screen.c tests/test_m2_20_glyph_decode.c \
             -o /tmp/test_m2_20_glyph_decode
           /tmp/test_m2_20_glyph_decode
+
+      - name: Test M2.21 portable renderer contract
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c src/terminal/screen.c src/terminal/renderer.c \
+            tests/test_m2_21_renderer.c -o /tmp/test_m2_21_renderer
+          /tmp/test_m2_21_renderer
