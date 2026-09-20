@@ -10,3 +10,11 @@ static const kt_term_rgb c64[16]={
 };
 uint8_t kt_term_palette_size(uint8_t p){return (p==KT_TERM_PALETTE_ANSI16||p==KT_TERM_PALETTE_C64)?16u:0u;}
 int kt_term_palette_lookup(uint8_t p,uint8_t i,kt_term_rgb*out){const kt_term_rgb*t;if(!out||i>=16u)return -1;if(p==KT_TERM_PALETTE_ANSI16)t=ansi16;else if(p==KT_TERM_PALETTE_C64)t=c64;else return -1;*out=t[i];return 0;}
+
+int kt_term_palette_for_profile(uint8_t profile,uint8_t*out){
+ if(!out)return -1;
+ if(profile==KT_TERM_PROFILE_PETSCII)*out=KT_TERM_PALETTE_C64;
+ else if(profile==KT_TERM_PROFILE_ANSI||profile==KT_TERM_PROFILE_CP437)*out=KT_TERM_PALETTE_ANSI16;
+ else return -1;
+ return 0;
+}
