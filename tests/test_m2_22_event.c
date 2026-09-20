@@ -1,7 +1,9 @@
 #include "kt/terminal_event.h"
 #include <assert.h>
+#include <string.h>
 #include "kt/terminal_screen.h"
-static unsigned n,b,p,r,k,m;static uint8_t last;static uint32_t key;
+static unsigned n,b,p,r,k,m;static uint8_t wire[32];static size_t wire_n;
+static int wr(void*c,const uint8_t*d,size_t z){(void)c;assert(z<=sizeof wire);memcpy(wire,d,z);wire_n=z;return 0;}static uint8_t last;static uint32_t key;
 static void cb(void*c,uint8_t x){(void)c;n++;last=x;}
 static void cp(void*c,const uint8_t*d,uint16_t z){(void)c;(void)d;p=z;}
 static void cr(void*c,uint16_t w,uint16_t h){(void)c;r=w+h;}
@@ -27,6 +29,11 @@ int main(void){
    assert(kt_term_dispatch_event(&x,kt_term_feed_adapter_ops(),&a)==0);
    assert(cells[1].ch=='B'&&cells[2].ch=='C');
    x.type=KT_TERM_EVENT_KEY;assert(kt_term_dispatch_event(&x,kt_term_feed_adapter_ops(),&a)==-2);
+ }
+ {kt_term_output_ops oo={wr};kt_term_key_output_adapter oa;kt_term_event q;
+   kt_term_key_output_adapter_init(&oa,&oo,0);q.type=KT_TERM_EVENT_KEY;q.key=KT_TERM_KEY_F12;q.mods=KT_TERM_MOD_ALT;wire_n=0;
+   assert(kt_term_dispatch_event(&q,kt_term_key_output_adapter_ops(),&oa)==0);
+   assert(wire_n==7u&&!memcmp(wire,"\x1b[24;3~",7));
  }
  return 0;
 }
