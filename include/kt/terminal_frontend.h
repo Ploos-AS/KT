@@ -22,7 +22,6 @@ int kt_term_frontend_init(kt_term_frontend *,kt_term_screen *,uint8_t,
 void kt_term_frontend_invalidate(kt_term_frontend *);
 int kt_term_frontend_render(kt_term_frontend *);
 int kt_term_frontend_set_profile(kt_term_frontend *,uint8_t);
-void kt_term_frontend_invalidate(kt_term_frontend *);
 int kt_term_frontend_key(kt_term_frontend *,uint32_t,uint8_t);
 int kt_term_frontend_flush(kt_term_frontend *);
 #endif
