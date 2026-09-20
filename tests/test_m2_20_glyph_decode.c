@@ -43,6 +43,12 @@ int main(void){
    assert(kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,cells[0].ch,cells[0].charset).codepoint==0x41u);
    assert(kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,cells[1].ch,cells[1].charset).codepoint==0x61u);
    assert(kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,cells[2].ch,cells[2].charset).codepoint==0x41u);
+   kt_term_feed(&t,(const uint8_t[]){0x0Eu},1u);
+   assert(t.charset==KT_TERM_PETSCII_LOWER_UPPER && s.charset==KT_TERM_PETSCII_LOWER_UPPER);
+   kt_term_reset(&t);
+   assert(t.profile==KT_TERM_PROFILE_PETSCII);
+   assert(t.charset==KT_TERM_PETSCII_LOWER_UPPER);
+   assert(s.charset==KT_TERM_PETSCII_LOWER_UPPER);
  }
  return 0;
 }
