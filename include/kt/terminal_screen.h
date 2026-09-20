@@ -3,9 +3,10 @@
 #include "kt/terminal.h"
 #include <stddef.h>
 #include <stdint.h>
-typedef struct kt_term_cell { uint8_t ch; kt_term_attr attr; } kt_term_cell;
+typedef struct kt_term_cell { uint8_t ch, charset; kt_term_attr attr; } kt_term_cell;
 typedef struct kt_term_screen {
     uint16_t width,height,x,y;
+    uint8_t charset;
     kt_term_cell *cells;
     size_t cell_count;
 } kt_term_screen;
