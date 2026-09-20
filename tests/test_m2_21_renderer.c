@@ -18,5 +18,19 @@ int main(void){
  assert(out.cells[1].glyph.source_byte==0x41u);
  assert(out.cells[1].glyph.charset==KT_TERM_PETSCII_LOWER_UPPER);
  assert(out.cx==scr.x&&out.cy==scr.y);
+ assert(out.cells[0].x==0u&&out.cells[0].y==0u);
+ assert(out.cells[1].x==1u&&out.cells[1].y==0u);
+ assert(out.cells[2].x==0u&&out.cells[2].y==1u);
+ assert(out.cells[3].x==1u&&out.cells[3].y==1u);
+ assert(kt_term_render(0,KT_TERM_PROFILE_PETSCII,&ops,&out)==-1);
+ assert(kt_term_render(&scr,KT_TERM_PROFILE_PETSCII,0,&out)==-1);
+ { kt_term_renderer_ops bad={0,0,0,0};
+   assert(kt_term_render(&scr,KT_TERM_PROFILE_PETSCII,&bad,&out)==-1);
+ }
+ { kt_term_renderer_ops minimal={0,draw,0,0}; sink m;
+   memset(&m,0,sizeof m);
+   assert(kt_term_render(&scr,KT_TERM_PROFILE_PETSCII,&minimal,&m)==0);
+   assert(m.draw==4u&&m.begin==0u&&m.cursor==0u&&m.end==0u);
+ }
  return 0;
 }
