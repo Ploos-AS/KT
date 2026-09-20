@@ -19,3 +19,8 @@ int kt_term_viewport_set_anchor(kt_term_viewport*v,kt_term_viewport_anchor a){
  if(!v||(a!=KT_TERM_VIEWPORT_TOP_LEFT&&a!=KT_TERM_VIEWPORT_CENTER&&a!=KT_TERM_VIEWPORT_BOTTOM_RIGHT))return -1;
  v->anchor=a;place(v);return 0;
 }
+
+static void resize_event(void*p,uint16_t w,uint16_t h){kt_term_viewport_resize_adapter*a=p;if(a&&a->viewport)(void)kt_term_viewport_resize(a->viewport,w,h);}
+static const kt_term_input_ops viewport_ops={0,0,resize_event,0,0};
+void kt_term_viewport_resize_adapter_init(kt_term_viewport_resize_adapter*a,kt_term_viewport*v){if(a)a->viewport=v;}
+const kt_term_input_ops *kt_term_viewport_resize_adapter_ops(void){return &viewport_ops;}
