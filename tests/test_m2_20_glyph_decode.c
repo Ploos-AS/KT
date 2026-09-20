@@ -31,5 +31,18 @@ int main(void){
    assert(g.codepoint==0x1FB8Fu && g.source_byte==0xA8u);
    assert(g.profile==KT_TERM_PROFILE_PETSCII && g.charset==KT_TERM_PETSCII_UPPER_GRAPHICS);
  }
+ { kt_term_cell cells[8]; kt_term_screen s; kt_term t;
+   static const uint8_t v[]={0x41u,0x0Eu,0x41u,0x8Eu,0x41u};
+   assert(kt_term_screen_init(&s,8u,1u,cells,8u)==0);
+   kt_term_init(&t,kt_term_screen_ops(),&s);
+   kt_term_set_profile(&t,KT_TERM_PROFILE_PETSCII);
+   kt_term_feed(&t,v,sizeof v);
+   assert(cells[0].ch==0x41u && cells[0].charset==KT_TERM_PETSCII_UPPER_GRAPHICS);
+   assert(cells[1].ch==0x41u && cells[1].charset==KT_TERM_PETSCII_LOWER_UPPER);
+   assert(cells[2].ch==0x41u && cells[2].charset==KT_TERM_PETSCII_UPPER_GRAPHICS);
+   assert(kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,cells[0].ch,cells[0].charset).codepoint==0x41u);
+   assert(kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,cells[1].ch,cells[1].charset).codepoint==0x61u);
+   assert(kt_term_resolve_glyph(KT_TERM_PROFILE_PETSCII,cells[2].ch,cells[2].charset).codepoint==0x41u);
+ }
  return 0;
 }
