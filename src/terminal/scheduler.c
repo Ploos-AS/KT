@@ -12,3 +12,11 @@ int kt_term_present_scheduler_take(kt_term_present_scheduler*s,kt_term_dirty_row
  if(s->pending){out->first=s->first_row;out->count=s->count;out->valid=1;}
  s->pending=0;s->immediate=0;s->blink_pending=0;return 0;
 }
+
+int kt_term_present_scheduler_present(kt_term_present_scheduler*s,const kt_term_display_ops*o,void*ctx,const kt_term_display_frame*f){
+ kt_term_dirty_rows d;int r;if(!s||!o||!f)return -1;
+ if(!s->pending)return 1;
+ d.first=s->first_row;d.count=s->count;d.valid=1;
+ r=kt_term_display_present_rows(o,ctx,f,d.first,d.count);if(r)return r;
+ s->pending=0;s->immediate=0;s->blink_pending=0;return 0;
+}
