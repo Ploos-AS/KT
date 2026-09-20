@@ -74,3 +74,14 @@ jobs:
             src/terminal/terminal.c src/terminal/screen.c src/terminal/renderer.c \
             tests/test_m2_21_renderer.c -o /tmp/test_m2_21_renderer
           /tmp/test_m2_21_renderer
+
+      - name: Test M2.22 terminal event and input abstraction
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c src/terminal/screen.c src/terminal/event.c src/terminal/key_encode.c \
+            tests/test_m2_22_event.c -o /tmp/test_m2_22_event
+          /tmp/test_m2_22_event
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/key_encode.c tests/test_m2_22_key_encode.c \
+            -o /tmp/test_m2_22_key_encode
+          /tmp/test_m2_22_key_encode
