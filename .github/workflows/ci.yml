@@ -60,3 +60,10 @@ jobs:
             src/terminal/terminal.c src/terminal/screen.c tests/test_m2_19_terminal_screen.c \
             -o /tmp/test_m2_19_terminal_screen
           /tmp/test_m2_19_terminal_screen
+
+      - name: Test M2.20 glyph decoding
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/terminal.c src/terminal/screen.c tests/test_m2_20_glyph_decode.c \
+            -o /tmp/test_m2_20_glyph_decode
+          /tmp/test_m2_20_glyph_decode
