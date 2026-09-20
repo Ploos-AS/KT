@@ -1,6 +1,7 @@
 #ifndef KT_TERMINAL_EVENT_H
 #define KT_TERMINAL_EVENT_H
 #include <stdint.h>
+#include "kt/terminal.h"
 typedef enum kt_term_event_type {
  KT_TERM_EVENT_BYTE=0,
  KT_TERM_EVENT_PASTE,
@@ -25,4 +26,9 @@ typedef struct kt_term_input_ops {
  void (*on_mouse)(void *,uint16_t,uint16_t,uint8_t,uint8_t);
 } kt_term_input_ops;
 int kt_term_dispatch_event(const kt_term_event *,const kt_term_input_ops *,void *);
+typedef struct kt_term_feed_adapter {
+ kt_term *term;
+} kt_term_feed_adapter;
+void kt_term_feed_adapter_init(kt_term_feed_adapter *,kt_term *);
+const kt_term_input_ops *kt_term_feed_adapter_ops(void);
 #endif
