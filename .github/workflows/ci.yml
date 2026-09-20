@@ -170,3 +170,10 @@ jobs:
             tests/test_m2_28_damage_e2e.c \
             -o /tmp/test_m2_28_damage_e2e
           /tmp/test_m2_28_damage_e2e
+
+      - name: Test M2.29 presentation scheduler
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/scheduler.c tests/test_m2_29_scheduler.c \
+            -o /tmp/test_m2_29_scheduler
+          /tmp/test_m2_29_scheduler
