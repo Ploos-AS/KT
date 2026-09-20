@@ -19,4 +19,16 @@ typedef struct kt_term_renderer_ops {
    Frontends own graphics, fonts, clipping and presentation. */
 int kt_term_render(const kt_term_screen *, uint8_t profile,
                    const kt_term_renderer_ops *, void *);
+typedef struct kt_term_render_cache {
+    kt_term_cell *cells;
+    size_t cell_count;
+    uint16_t width, height, cursor_x, cursor_y;
+    uint8_t valid;
+} kt_term_render_cache;
+
+/* Incremental renderer. Cache storage is caller-owned and must hold
+   width*height cells. First call renders a complete frame. */
+int kt_term_render_incremental(const kt_term_screen *, uint8_t profile,
+                               kt_term_render_cache *,
+                               const kt_term_renderer_ops *, void *);
 #endif
