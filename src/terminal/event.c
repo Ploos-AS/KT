@@ -19,14 +19,23 @@ static const kt_term_input_ops feed_ops={feed_byte,feed_paste,0,0,0};
 void kt_term_feed_adapter_init(kt_term_feed_adapter*a,kt_term*t){if(a)a->term=t;}
 const kt_term_input_ops *kt_term_feed_adapter_ops(void){return &feed_ops;}
 
+int kt_term_key_output_flush(kt_term_key_output_adapter*a){
+ int n;if(!a||!a->output||!a->output->write)return -1;
+ while(a->pending_off<a->pending_len){
+  n=a->output->write(a->output_ctx,a->pending+a->pending_off,a->pending_len-a->pending_off);
+  if(n<0){a->last_error=n;return n;} if(n==0)return 1;
+  if((size_t)n>a->pending_len-a->pending_off){a->last_error=-2;return -2;}
+  a->pending_off+=(size_t)n;
+ }
+ a->pending_len=0u;a->pending_off=0u;a->last_error=0;return 0;
+}
 static void output_key(void*p,uint32_t key,uint8_t mods){
- kt_term_key_output_adapter*a=p;uint8_t b[20];size_t n;
- if(!a||!a->output||!a->output->write)return;
- n=kt_term_encode_key(key,mods,b,sizeof b);
- if(n)a->output->write(a->output_ctx,b,n);
+ kt_term_key_output_adapter*a=p;size_t n;if(!a||a->pending_len)return;
+ n=kt_term_encode_key(key,mods,a->pending,sizeof a->pending);
+ if(!n)return;a->pending_len=n;a->pending_off=0u;(void)kt_term_key_output_flush(a);
 }
 static const kt_term_input_ops key_output_ops={0,0,0,output_key,0};
 void kt_term_key_output_adapter_init(kt_term_key_output_adapter*a,const kt_term_output_ops*o,void*c){
- if(a){a->output=o;a->output_ctx=c;}
+ if(a){a->output=o;a->output_ctx=c;a->pending_len=0u;a->pending_off=0u;a->last_error=0;}
 }
 const kt_term_input_ops *kt_term_key_output_adapter_ops(void){return &key_output_ops;}
