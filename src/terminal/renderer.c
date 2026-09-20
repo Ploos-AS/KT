@@ -25,7 +25,7 @@ int kt_term_render_incremental(const kt_term_screen*s,uint8_t profile,
  size_t i,n;int full;
  if(!s||!cache||!cache->cells||!ops||!ops->draw_cell)return -1;
  n=(size_t)s->width*s->height;if(cache->cell_count<n)return -1;
- full=!cache->valid||cache->width!=s->width||cache->height!=s->height;
+ full=!cache->valid||cache->width!=s->width||cache->height!=s->height||cache->profile!=profile;
  if(ops->begin_frame)ops->begin_frame(ctx,s->width,s->height);
  for(i=0;i<n;i++)if(full||!same_cell(&s->cells[i],&cache->cells[i])){
   kt_term_render_cell r; r.x=(uint16_t)(i%s->width);r.y=(uint16_t)(i/s->width);
@@ -34,6 +34,6 @@ int kt_term_render_incremental(const kt_term_screen*s,uint8_t profile,
  }
  if(ops->draw_cursor&&(full||cache->cursor_x!=s->x||cache->cursor_y!=s->y))
   ops->draw_cursor(ctx,s->x,s->y);
- cache->width=s->width;cache->height=s->height;cache->cursor_x=s->x;cache->cursor_y=s->y;cache->valid=1u;
+ cache->width=s->width;cache->height=s->height;cache->cursor_x=s->x;cache->cursor_y=s->y;cache->profile=profile;cache->valid=1u;
  if(ops->end_frame)ops->end_frame(ctx);return 0;
 }
