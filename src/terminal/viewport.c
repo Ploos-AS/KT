@@ -7,14 +7,22 @@ static void place(kt_term_viewport*v){
 }
 static int calc(kt_term_viewport*v,uint16_t w,uint16_t h){
  if(!v||!w||!h||!v->cell_width||!v->cell_height)return -1;
- v->pixel_width=w;v->pixel_height=h;v->cols=(uint16_t)(w/v->cell_width);v->rows=(uint16_t)(h/v->cell_height);
+ v->pixel_width=w;v->pixel_height=h;
+ if(v->mode==KT_TERM_VIEWPORT_FIXED){v->cols=v->fixed_cols;v->rows=v->fixed_rows;
+  if((uint32_t)v->cols*v->cell_width>w||(uint32_t)v->rows*v->cell_height>h)return -2;
+ }else{v->cols=(uint16_t)(w/v->cell_width);v->rows=(uint16_t)(h/v->cell_height);}
  if(!v->cols||!v->rows)return -1;
  v->used_width=(uint16_t)(v->cols*v->cell_width);v->used_height=(uint16_t)(v->rows*v->cell_height);place(v);return 0;
 }
 int kt_term_viewport_init(kt_term_viewport*v,uint16_t w,uint16_t h,uint8_t cw,uint8_t ch){
- if(!v||!cw||!ch)return -1;v->cell_width=cw;v->cell_height=ch;v->anchor=KT_TERM_VIEWPORT_TOP_LEFT;return calc(v,w,h);
+ if(!v||!cw||!ch)return -1;v->cell_width=cw;v->cell_height=ch;v->anchor=KT_TERM_VIEWPORT_TOP_LEFT;v->mode=KT_TERM_VIEWPORT_FIT;v->fixed_cols=0;v->fixed_rows=0;return calc(v,w,h);
 }
 int kt_term_viewport_resize(kt_term_viewport*v,uint16_t w,uint16_t h){return calc(v,w,h);}
+int kt_term_viewport_set_fixed(kt_term_viewport*v,uint16_t cols,uint16_t rows){
+ kt_term_viewport old;if(!v||!cols||!rows)return -1;old=*v;v->mode=KT_TERM_VIEWPORT_FIXED;v->fixed_cols=cols;v->fixed_rows=rows;
+ if(calc(v,v->pixel_width,v->pixel_height)!=0){*v=old;return -2;}return 0;
+}
+int kt_term_viewport_set_fit(kt_term_viewport*v){if(!v)return -1;v->mode=KT_TERM_VIEWPORT_FIT;return calc(v,v->pixel_width,v->pixel_height);}
 int kt_term_viewport_set_anchor(kt_term_viewport*v,kt_term_viewport_anchor a){
  if(!v||(a!=KT_TERM_VIEWPORT_TOP_LEFT&&a!=KT_TERM_VIEWPORT_CENTER&&a!=KT_TERM_VIEWPORT_BOTTOM_RIGHT))return -1;
  v->anchor=a;place(v);return 0;
