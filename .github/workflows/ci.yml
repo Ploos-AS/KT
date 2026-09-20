@@ -193,3 +193,10 @@ jobs:
             src/terminal/display.c src/terminal/scheduler.c \
             tests/test_m2_29_blink.c -o /tmp/test_m2_29_blink
           /tmp/test_m2_29_blink
+
+      - name: Test M2.30 terminal viewport
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/viewport.c tests/test_m2_30_viewport.c \
+            -o /tmp/test_m2_30_viewport
+          /tmp/test_m2_30_viewport
