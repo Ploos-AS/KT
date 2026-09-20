@@ -26,7 +26,11 @@ int kt_term_viewport_resize(kt_term_viewport *,uint16_t,uint16_t);
 int kt_term_viewport_set_anchor(kt_term_viewport *,kt_term_viewport_anchor);
 int kt_term_viewport_set_fixed(kt_term_viewport *,uint16_t,uint16_t);
 int kt_term_viewport_set_fit(kt_term_viewport *);
-typedef struct kt_term_viewport_resize_adapter { kt_term_viewport *viewport; } kt_term_viewport_resize_adapter;
+typedef struct kt_term_viewport_resize_adapter {
+ kt_term_viewport *viewport;
+ int last_result;
+} kt_term_viewport_resize_adapter;
 void kt_term_viewport_resize_adapter_init(kt_term_viewport_resize_adapter *,kt_term_viewport *);
 const kt_term_input_ops *kt_term_viewport_resize_adapter_ops(void);
+int kt_term_viewport_resize_adapter_result(const kt_term_viewport_resize_adapter *);
 #endif
