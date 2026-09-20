@@ -11,6 +11,10 @@ int main(void){
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,0x61u)==0x41u);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,0x7Au)==0x5Au);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,'0')==0x30u);
+ assert(kt_term_decode_petscii(0x41u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x41u);
+ assert(kt_term_decode_petscii(0x41u,KT_TERM_PETSCII_LOWER_UPPER)==0x61u);
+ assert(kt_term_decode_petscii(0x5Au,KT_TERM_PETSCII_LOWER_UPPER)==0x7Au);
+ assert(kt_term_decode_petscii(0x61u,KT_TERM_PETSCII_LOWER_UPPER)==0x41u);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_CP437,0xFFu)==0xFFFDu);
  return 0;
 }
