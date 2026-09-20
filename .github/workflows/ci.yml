@@ -147,3 +147,10 @@ jobs:
             src/terminal/palette.c tests/test_m2_26_palette.c \
             -o /tmp/test_m2_26_palette
           /tmp/test_m2_26_palette
+
+      - name: Test M2.27 terminal display presentation
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/display.c tests/test_m2_27_display.c \
+            -o /tmp/test_m2_27_display
+          /tmp/test_m2_27_display
