@@ -1,6 +1,7 @@
 #ifndef KT_TERMINAL_VIEWPORT_H
 #define KT_TERMINAL_VIEWPORT_H
 #include <stdint.h>
+#include "kt/terminal_event.h"
 typedef enum kt_term_viewport_anchor {
  KT_TERM_VIEWPORT_TOP_LEFT=0,
  KT_TERM_VIEWPORT_CENTER=1,
@@ -17,4 +18,7 @@ typedef struct kt_term_viewport {
 int kt_term_viewport_init(kt_term_viewport *,uint16_t,uint16_t,uint8_t,uint8_t);
 int kt_term_viewport_resize(kt_term_viewport *,uint16_t,uint16_t);
 int kt_term_viewport_set_anchor(kt_term_viewport *,kt_term_viewport_anchor);
+typedef struct kt_term_viewport_resize_adapter { kt_term_viewport *viewport; } kt_term_viewport_resize_adapter;
+void kt_term_viewport_resize_adapter_init(kt_term_viewport_resize_adapter *,kt_term_viewport *);
+const kt_term_input_ops *kt_term_viewport_resize_adapter_ops(void);
 #endif
