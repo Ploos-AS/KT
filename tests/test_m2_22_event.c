@@ -1,5 +1,6 @@
 #include "kt/terminal_event.h"
 #include <assert.h>
+#include "kt/terminal_screen.h"
 static unsigned n,b,p,r,k,m;static uint8_t last;static uint32_t key;
 static void cb(void*c,uint8_t x){(void)c;n++;last=x;}
 static void cp(void*c,const uint8_t*d,uint16_t z){(void)c;(void)d;p=z;}
@@ -15,5 +16,15 @@ int main(void){
  e.type=KT_TERM_EVENT_MOUSE;e.width=4;e.height=5;e.byte=1;e.mods=2;assert(kt_term_dispatch_event(&e,&o,0)==0&&b==12u);
  e.type=99;assert(kt_term_dispatch_event(&e,&o,0)==-3);
  assert(kt_term_dispatch_event(0,&o,0)==-1);
+ { kt_term_cell cells[4];kt_term_screen s;kt_term t;kt_term_feed_adapter a;kt_term_event x;
+   assert(kt_term_screen_init(&s,4u,1u,cells,4u)==0);
+   kt_term_init(&t,kt_term_screen_ops(),&s);kt_term_feed_adapter_init(&a,&t);
+   x.type=KT_TERM_EVENT_BYTE;x.byte='A';assert(kt_term_dispatch_event(&x,kt_term_feed_adapter_ops(),&a)==0);
+   assert(cells[0].ch=='A');
+   x.type=KT_TERM_EVENT_PASTE;x.data=(const uint8_t*)"BC";x.data_len=2u;
+   assert(kt_term_dispatch_event(&x,kt_term_feed_adapter_ops(),&a)==0);
+   assert(cells[1].ch=='B'&&cells[2].ch=='C');
+   x.type=KT_TERM_EVENT_KEY;assert(kt_term_dispatch_event(&x,kt_term_feed_adapter_ops(),&a)==-2);
+ }
  return 0;
 }
