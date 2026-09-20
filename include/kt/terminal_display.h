@@ -21,4 +21,6 @@ typedef struct kt_term_display_ops {
 } kt_term_display_ops;
 
 int kt_term_display_present(const kt_term_display_ops *,void *,const kt_term_display_frame *);
+int kt_term_display_present_rows(const kt_term_display_ops *,void *,
+                                 const kt_term_display_frame *,uint16_t,uint16_t);
 #endif
