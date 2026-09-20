@@ -17,7 +17,9 @@ static int calc(kt_term_viewport*v,uint16_t w,uint16_t h){
 int kt_term_viewport_init(kt_term_viewport*v,uint16_t w,uint16_t h,uint8_t cw,uint8_t ch){
  if(!v||!cw||!ch)return -1;v->cell_width=cw;v->cell_height=ch;v->anchor=KT_TERM_VIEWPORT_TOP_LEFT;v->mode=KT_TERM_VIEWPORT_FIT;v->fixed_cols=0;v->fixed_rows=0;return calc(v,w,h);
 }
-int kt_term_viewport_resize(kt_term_viewport*v,uint16_t w,uint16_t h){return calc(v,w,h);}
+int kt_term_viewport_resize(kt_term_viewport*v,uint16_t w,uint16_t h){
+ kt_term_viewport old;int rc;if(!v)return -1;old=*v;rc=calc(v,w,h);if(rc!=0)*v=old;return rc;
+}
 int kt_term_viewport_set_fixed(kt_term_viewport*v,uint16_t cols,uint16_t rows){
  kt_term_viewport old;if(!v||!cols||!rows)return -1;old=*v;v->mode=KT_TERM_VIEWPORT_FIXED;v->fixed_cols=cols;v->fixed_rows=rows;
  if(calc(v,v->pixel_width,v->pixel_height)!=0){*v=old;return -2;}return 0;
