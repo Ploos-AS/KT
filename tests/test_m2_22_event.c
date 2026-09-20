@@ -2,6 +2,9 @@
 #include <assert.h>
 #include <string.h>
 #include "kt/terminal_screen.h"
+typedef struct wsink{uint8_t data[32];size_t n,limit;int mode;}wsink;
+static int scripted(void*p,const uint8_t*d,size_t z){wsink*s=p;size_t q;if(s->mode<0)return s->mode;if(s->mode==1)return 0;q=z;if(s->limit&&q>s->limit)q=s->limit;memcpy(s->data+s->n,d,q);s->n+=q;return (int)q;}
+static int overreport(void*p,const uint8_t*d,size_t z){(void)p;(void)d;return (int)z+1;}
 static unsigned n,b,p,r,k,m;static uint8_t wire[32];static size_t wire_n;
 static int wr(void*c,const uint8_t*d,size_t z){(void)c;assert(z<=sizeof wire);memcpy(wire,d,z);wire_n=z;return 0;}static uint8_t last;static uint32_t key;
 static void cb(void*c,uint8_t x){(void)c;n++;last=x;}
@@ -34,6 +37,19 @@ int main(void){
    kt_term_key_output_adapter_init(&oa,&oo,0);q.type=KT_TERM_EVENT_KEY;q.key=KT_TERM_KEY_F12;q.mods=KT_TERM_MOD_ALT;wire_n=0;
    assert(kt_term_dispatch_event(&q,kt_term_key_output_adapter_ops(),&oa)==0);
    assert(wire_n==7u&&!memcmp(wire,"\x1b[24;3~",7));
+ }
+ {kt_term_output_ops oo={scripted};kt_term_key_output_adapter a;kt_term_event q={KT_TERM_EVENT_KEY,0,0,0,0,KT_TERM_KEY_F12,0,0};wsink s={{0},0,2,0};
+   kt_term_key_output_adapter_init(&a,&oo,&s);q.mods=KT_TERM_MOD_ALT;
+   assert(kt_term_dispatch_event(&q,kt_term_key_output_adapter_ops(),&a)==0);
+   assert(a.pending_len==0u&&s.n==7u&&!memcmp(s.data,"\x1b[24;3~",7));
+   memset(&s,0,sizeof s);s.mode=1;kt_term_key_output_adapter_init(&a,&oo,&s);
+   assert(kt_term_dispatch_event(&q,kt_term_key_output_adapter_ops(),&a)==0&&a.pending_len==7u&&a.pending_off==0u);
+   s.mode=0;s.limit=3;assert(kt_term_key_output_flush(&a)==0&&a.pending_len==0u&&s.n==7u);
+   memset(&s,0,sizeof s);s.mode=-7;kt_term_key_output_adapter_init(&a,&oo,&s);
+   assert(kt_term_dispatch_event(&q,kt_term_key_output_adapter_ops(),&a)==0&&a.last_error==-7&&a.pending_len==7u);
+   s.mode=0;assert(kt_term_key_output_flush(&a)==0&&a.pending_len==0u&&a.last_error==0);
+   {kt_term_output_ops bad={overreport};kt_term_key_output_adapter_init(&a,&bad,0);
+    assert(kt_term_dispatch_event(&q,kt_term_key_output_adapter_ops(),&a)==0&&a.last_error==-2);}
  }
  return 0;
 }
