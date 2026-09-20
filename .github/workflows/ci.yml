@@ -102,3 +102,10 @@ jobs:
             src/terminal/platform.c tests/test_m2_23_platform.c \
             -o /tmp/test_m2_23_platform
           /tmp/test_m2_23_platform
+
+      - name: Test M2.24 terminal font provider
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/font.c tests/test_m2_24_font.c \
+            -o /tmp/test_m2_24_font
+          /tmp/test_m2_24_font
