@@ -17,9 +17,13 @@ typedef struct kt_term_raster {
  uint8_t cell_height;
  uint8_t fg;
  uint8_t bg;
+ uint8_t cursor_visible;
+ uint8_t blink_phase;
 } kt_term_raster;
 
 int kt_term_raster_init(kt_term_raster *,uint8_t *,uint16_t,uint16_t,size_t,uint8_t,uint8_t);
+void kt_term_raster_set_blink_phase(kt_term_raster *,uint8_t);
+void kt_term_raster_set_cursor_visible(kt_term_raster *,uint8_t);
 void kt_term_raster_clear(kt_term_raster *,uint8_t);
 void kt_term_raster_draw_bitmap_cell(void *,const kt_term_bitmap_render_cell *);
 const kt_term_bitmap_renderer_ops *kt_term_raster_renderer_ops(void);
