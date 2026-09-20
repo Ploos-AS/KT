@@ -6,6 +6,8 @@ int kt_term_frontend_init(kt_term_frontend*f,kt_term_screen*s,uint8_t p,
  f->screen=s;f->profile=p;f->cache=c;f->renderer=r;f->renderer_ctx=rc;
  f->output=o;f->output_ctx=oc;kt_term_key_output_adapter_init(&f->key_output,o,oc);return 0;
 }
+void kt_term_frontend_invalidate(kt_term_frontend*f){if(f&&f->cache)f->cache->valid=0u;}
+int kt_term_frontend_set_profile(kt_term_frontend*f,uint8_t p){if(!f)return -1;if(f->profile!=p){f->profile=p;kt_term_frontend_invalidate(f);}return 0;}
 int kt_term_frontend_render(kt_term_frontend*f){
  if(!f)return -1;return kt_term_render_incremental(f->screen,f->profile,f->cache,f->renderer,f->renderer_ctx);
 }
