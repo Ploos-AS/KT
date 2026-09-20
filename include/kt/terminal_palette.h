@@ -1,6 +1,7 @@
 #ifndef KT_TERMINAL_PALETTE_H
 #define KT_TERMINAL_PALETTE_H
 #include <stdint.h>
+#include "kt/terminal.h"
 
 typedef struct kt_term_rgb { uint8_t r,g,b; } kt_term_rgb;
 
@@ -9,5 +10,6 @@ typedef struct kt_term_rgb { uint8_t r,g,b; } kt_term_rgb;
 
 int kt_term_palette_lookup(uint8_t palette,uint8_t index,kt_term_rgb *out);
 uint8_t kt_term_palette_size(uint8_t palette);
+int kt_term_palette_for_profile(uint8_t profile,uint8_t *palette);
 
 #endif
