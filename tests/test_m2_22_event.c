@@ -12,7 +12,9 @@ int main(void){
  assert(kt_term_dispatch_event(&e,&o,0)==0&&n==1u&&last==0x41u);
  e.type=KT_TERM_EVENT_PASTE;e.data=(const uint8_t*)"abc";e.data_len=3;assert(kt_term_dispatch_event(&e,&o,0)==0&&p==3u);
  e.type=KT_TERM_EVENT_RESIZE;e.width=80;e.height=25;assert(kt_term_dispatch_event(&e,&o,0)==0&&r==105u);
- e.type=KT_TERM_EVENT_KEY;e.key=0x1234u;e.mods=2;assert(kt_term_dispatch_event(&e,&o,0)==0&&k==0x1234u&&m==2u);
+ e.type=KT_TERM_EVENT_KEY;e.key=KT_TERM_KEY_UP;e.mods=KT_TERM_MOD_CTRL|KT_TERM_MOD_SHIFT;
+ assert(kt_term_dispatch_event(&e,&o,0)==0&&k==KT_TERM_KEY_UP&&m==(KT_TERM_MOD_CTRL|KT_TERM_MOD_SHIFT));
+ e.key=KT_TERM_KEY_F12;e.mods=KT_TERM_MOD_ALT;assert(kt_term_dispatch_event(&e,&o,0)==0&&k==KT_TERM_KEY_F12&&m==KT_TERM_MOD_ALT);
  e.type=KT_TERM_EVENT_MOUSE;e.width=4;e.height=5;e.byte=1;e.mods=2;assert(kt_term_dispatch_event(&e,&o,0)==0&&b==12u);
  e.type=99;assert(kt_term_dispatch_event(&e,&o,0)==-3);
  assert(kt_term_dispatch_event(0,&o,0)==-1);
