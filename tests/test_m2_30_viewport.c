@@ -12,5 +12,12 @@ int main(void){
  assert(kt_term_viewport_set_anchor(&v,(kt_term_viewport_anchor)99)==-1);
  assert(kt_term_viewport_init(&v,7,15,8,16)==-1);
  assert(kt_term_viewport_init(&v,640,480,0,16)==-1);
+ { kt_term_viewport_resize_adapter a;kt_term_event e;
+   assert(kt_term_viewport_init(&v,640,400,8,16)==0);
+   kt_term_viewport_resize_adapter_init(&a,&v);
+   e.type=KT_TERM_EVENT_RESIZE;e.width=645;e.height=407;
+   assert(kt_term_dispatch_event(&e,kt_term_viewport_resize_adapter_ops(),&a)==0);
+   assert(v.pixel_width==645&&v.pixel_height==407&&v.cols==80&&v.rows==25);
+ }
  return 0;
 }
