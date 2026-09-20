@@ -45,6 +45,20 @@ uint32_t kt_term_decode_petscii(uint8_t ch,uint8_t charset){
   return (uint32_t)ch;
  }
  if(ch>=0x61u&&ch<=0x7Au)return (uint32_t)(ch-0x20u);
+ if(charset==KT_TERM_PETSCII_UPPER_GRAPHICS){
+  /* Unicode Symbols for Legacy Computing provides stable PETSCII-like
+     quadrant/block renderer targets for the first graphics baseline. */
+  switch(ch){
+   case 0xA0u:return 0x00A0u; /* shifted space / NBSP */
+   case 0xA1u:return 0x258Cu; /* left half block */
+   case 0xA2u:return 0x2584u; /* lower half block */
+   case 0xA3u:return 0x2594u; /* upper one eighth block */
+   case 0xA4u:return 0x2581u; /* lower one eighth block */
+   case 0xA5u:return 0x258Fu; /* left one eighth block */
+   case 0xA6u:return 0x2592u; /* medium shade */
+   default:break;
+  }
+ }
  if(ch<0x80u)return (uint32_t)ch;
  return 0xFFFDu;
 }
