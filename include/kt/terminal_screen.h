@@ -20,4 +20,12 @@ uint32_t kt_term_decode_codepoint(uint8_t profile,uint8_t ch);
 #define KT_TERM_PETSCII_UPPER_GRAPHICS 0u
 #define KT_TERM_PETSCII_LOWER_UPPER    1u
 uint32_t kt_term_decode_petscii(uint8_t ch,uint8_t charset);
+
+typedef struct kt_term_glyph {
+ uint32_t codepoint;
+ uint8_t source_byte;
+ uint8_t profile;
+ uint8_t charset;
+} kt_term_glyph;
+kt_term_glyph kt_term_resolve_glyph(uint8_t profile,uint8_t ch,uint8_t charset);
 #endif
