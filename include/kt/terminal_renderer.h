@@ -32,6 +32,12 @@ typedef struct kt_term_renderer_ops {
    Frontends own graphics, fonts, clipping and presentation. */
 int kt_term_render(const kt_term_screen *, uint8_t profile,
                    const kt_term_renderer_ops *, void *);
+typedef struct kt_term_render_damage {
+    uint16_t first_row, row_count;
+    uint16_t old_cursor_y, new_cursor_y;
+    uint8_t cells_changed, cursor_changed, full;
+} kt_term_render_damage;
+
 typedef struct kt_term_render_cache {
     kt_term_cell *cells;
     size_t cell_count;
@@ -45,6 +51,10 @@ typedef struct kt_term_render_cache {
 int kt_term_render_incremental(const kt_term_screen *, uint8_t profile,
                                kt_term_render_cache *,
                                const kt_term_renderer_ops *, void *);
+int kt_term_render_incremental_damage(const kt_term_screen *, uint8_t profile,
+                                      kt_term_render_cache *,
+                                      const kt_term_renderer_ops *, void *,
+                                      kt_term_render_damage *);
 int kt_term_render_bitmap(const kt_term_screen *, uint8_t profile,
                           const kt_term_font_ops *, void *,
                           const kt_term_bitmap_renderer_ops *, void *);
