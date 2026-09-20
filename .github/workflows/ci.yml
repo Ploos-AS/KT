@@ -177,3 +177,11 @@ jobs:
             src/terminal/scheduler.c tests/test_m2_29_scheduler.c \
             -o /tmp/test_m2_29_scheduler
           /tmp/test_m2_29_scheduler
+
+      - name: Test M2.29 scheduler display retry
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/display.c src/terminal/scheduler.c \
+            tests/test_m2_29_scheduler_display.c \
+            -o /tmp/test_m2_29_scheduler_display
+          /tmp/test_m2_29_scheduler_display
