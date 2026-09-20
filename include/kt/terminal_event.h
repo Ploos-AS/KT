@@ -48,9 +48,14 @@ typedef struct kt_term_output_ops {
 typedef struct kt_term_key_output_adapter {
  const kt_term_output_ops *output;
  void *output_ctx;
+ uint8_t pending[20];
+ size_t pending_len;
+ size_t pending_off;
+ int last_error;
 } kt_term_key_output_adapter;
 void kt_term_key_output_adapter_init(kt_term_key_output_adapter *,const kt_term_output_ops *,void *);
 const kt_term_input_ops *kt_term_key_output_adapter_ops(void);
+int kt_term_key_output_flush(kt_term_key_output_adapter *);
 
 typedef struct kt_term_feed_adapter {
  kt_term *term;
