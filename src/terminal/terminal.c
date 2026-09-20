@@ -27,7 +27,7 @@ static void dispatch(kt_term *t,uint8_t ch){
 }
 void kt_term_set_profile(kt_term *t,uint8_t p){if(t)t->profile=p;}
 void kt_term_reset(kt_term *t){uint8_t i;if(!t)return;defaults(&t->attr);t->parser_state=ST_GROUND;t->csi_count=0;t->csi_have_value=0;t->csi_value=0;for(i=0;i<KT_TERM_CSI_MAX_PARAMS;i++)t->csi_params[i]=0;}
-void kt_term_init(kt_term *t,const kt_term_ops *o,void *x){if(!t)return;t->ops=o;t->ctx=x;t->profile=KT_TERM_PROFILE_ANSI;kt_term_reset(t);}
+void kt_term_init(kt_term *t,const kt_term_ops *o,void *x){if(!t)return;t->ops=o;t->ctx=x;t->profile=KT_TERM_PROFILE_ANSI;t->charset=0u;kt_term_reset(t);}
 void kt_term_feed(kt_term *t,const uint8_t *d,size_t l){size_t i;if(!t||!d||!t->ops)return;
  for(i=0;i<l;i++){uint8_t ch=d[i];
   if(t->profile==KT_TERM_PROFILE_PETSCII){
@@ -35,6 +35,8 @@ void kt_term_feed(kt_term *t,const uint8_t *d,size_t l){size_t i;if(!t||!d||!t->
    if(ch==0x13u){if(t->ops->cursor_position)t->ops->cursor_position(t->ctx,1u,1u);continue;}
    if(ch==0x12u){t->attr.flags|=KT_TERM_ATTR_INVERSE;continue;}
    if(ch==0x92u){t->attr.flags&=(uint8_t)~KT_TERM_ATTR_INVERSE;continue;}
+   if(ch==0x0Eu){t->charset=1u;if(t->ops->set_charset)t->ops->set_charset(t->ctx,t->charset);continue;}
+   if(ch==0x8Eu){t->charset=0u;if(t->ops->set_charset)t->ops->set_charset(t->ctx,t->charset);continue;}
   }
   if(t->parser_state==ST_ESC){t->parser_state=(ch=='[')?ST_CSI:ST_GROUND;continue;}
   if(t->parser_state==ST_CSI){
