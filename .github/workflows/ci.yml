@@ -109,3 +109,11 @@ jobs:
             src/terminal/font.c tests/test_m2_24_font.c \
             -o /tmp/test_m2_24_font
           /tmp/test_m2_24_font
+
+      - name: Test M2.24 bitmap renderer integration
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/screen.c src/terminal/font.c src/terminal/renderer.c \
+            tests/test_m2_24_bitmap_renderer.c \
+            -o /tmp/test_m2_24_bitmap_renderer
+          /tmp/test_m2_24_bitmap_renderer
