@@ -32,5 +32,17 @@ int main(void){
    assert(kt_term_render(&scr,KT_TERM_PROFILE_PETSCII,&minimal,&m)==0);
    assert(m.draw==4u&&m.begin==0u&&m.cursor==0u&&m.end==0u);
  }
+ { kt_term_cell cache_cells[4]; kt_term_render_cache cache;
+   sink inc; memset(&cache,0,sizeof cache); cache.cells=cache_cells;cache.cell_count=4u;
+   memset(&inc,0,sizeof inc);
+   assert(kt_term_render_incremental(&scr,KT_TERM_PROFILE_PETSCII,&cache,&ops,&inc)==0);
+   assert(inc.draw==4u&&inc.cursor==1u);
+   memset(&inc,0,sizeof inc);
+   assert(kt_term_render_incremental(&scr,KT_TERM_PROFILE_PETSCII,&cache,&ops,&inc)==0);
+   assert(inc.draw==0u&&inc.cursor==0u);
+   scr.cells[3].ch='X'; memset(&inc,0,sizeof inc);
+   assert(kt_term_render_incremental(&scr,KT_TERM_PROFILE_PETSCII,&cache,&ops,&inc)==0);
+   assert(inc.draw==1u&&inc.cells[0].x==1u&&inc.cells[0].y==1u);
+ }
  return 0;
 }
