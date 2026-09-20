@@ -1,6 +1,7 @@
 #ifndef KT_TERMINAL_EVENT_H
 #define KT_TERMINAL_EVENT_H
 #include <stdint.h>
+#include <stddef.h>
 #include "kt/terminal.h"
 #define KT_TERM_MOD_SHIFT 0x01u
 #define KT_TERM_MOD_CTRL  0x02u
@@ -41,6 +42,16 @@ typedef struct kt_term_input_ops {
  void (*on_mouse)(void *,uint16_t,uint16_t,uint8_t,uint8_t);
 } kt_term_input_ops;
 int kt_term_dispatch_event(const kt_term_event *,const kt_term_input_ops *,void *);
+typedef struct kt_term_output_ops {
+ int (*write)(void *,const uint8_t *,size_t);
+} kt_term_output_ops;
+typedef struct kt_term_key_output_adapter {
+ const kt_term_output_ops *output;
+ void *output_ctx;
+} kt_term_key_output_adapter;
+void kt_term_key_output_adapter_init(kt_term_key_output_adapter *,const kt_term_output_ops *,void *);
+const kt_term_input_ops *kt_term_key_output_adapter_ops(void);
+
 typedef struct kt_term_feed_adapter {
  kt_term *term;
 } kt_term_feed_adapter;
