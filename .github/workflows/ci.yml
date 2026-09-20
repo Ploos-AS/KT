@@ -140,3 +140,10 @@ jobs:
             src/terminal/raster.c tests/test_m2_25_raster.c \
             -o /tmp/test_m2_25_raster
           /tmp/test_m2_25_raster
+
+      - name: Test M2.26 terminal palette
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/palette.c tests/test_m2_26_palette.c \
+            -o /tmp/test_m2_26_palette
+          /tmp/test_m2_26_palette
