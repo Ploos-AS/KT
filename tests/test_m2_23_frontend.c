@@ -15,9 +15,18 @@ int main(void){
  assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
  s.draw=s.cursor=0;assert(kt_term_frontend_render(&f)==0&&s.draw==0u&&s.cursor==0u);
  scr.cells[2].ch='X';assert(kt_term_frontend_render(&f)==0&&s.draw==1u);
+ s.draw=s.cursor=0;assert(kt_term_frontend_set_profile(&f,KT_TERM_PROFILE_CP437)==0);
+ assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
+ s.draw=s.cursor=0;assert(kt_term_frontend_set_profile(&f,KT_TERM_PROFILE_CP437)==0);
+ assert(kt_term_frontend_render(&f)==0&&s.draw==0u);
+ kt_term_frontend_invalidate(&f);assert(kt_term_frontend_render(&f)==0&&s.draw==4u);
  assert(kt_term_frontend_key(&f,KT_TERM_KEY_UP,0)==0&&s.n==3u&&!memcmp(s.wire,"\x1b[A",3));
  s.blocked=1;assert(kt_term_frontend_key(&f,KT_TERM_KEY_F12,KT_TERM_MOD_ALT)==0);
  assert(f.key_output.pending_len==7u);s.blocked=0;assert(kt_term_frontend_flush(&f)==0);
  assert(s.n==10u&&!memcmp(s.wire+3,"\x1b[24;3~",7));
+ {kt_term_frontend noout;sink z={0};kt_term_render_cache cc={cache_cells,4,0,0,0,0,0};
+  assert(kt_term_frontend_init(&noout,&scr,KT_TERM_PROFILE_ANSI,&cc,&ro,&z,0,0)==0);
+  assert(kt_term_frontend_key(&noout,KT_TERM_KEY_UP,0)==-1);
+ }
  return 0;
 }
