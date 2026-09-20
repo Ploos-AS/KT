@@ -20,5 +20,23 @@ int main(void){
  assert(dmg.cells_changed&&dmg.first_row==1&&dmg.row_count==1&&s.draws==1);
  assert(kt_term_dirty_rows_from_damage(&dirty,&dmg,8,16)==0&&dirty.first==8&&dirty.count==8);
  assert(kt_term_display_present_rows(&dop,&s,&frame,dirty.first,dirty.count)==0&&s.presents==1&&s.first==8&&s.count==8);
+ /* Cursor-only move dirties both old and new cursor rows. */
+ memset(&s,0,sizeof s);scr.x=0;scr.y=0;
+ assert(kt_term_render_incremental_damage(&scr,KT_TERM_PROFILE_ANSI,&cache,&ro,&s,&dmg)==0);
+ assert(!dmg.cells_changed&&dmg.cursor_changed&&s.draws==0);
+ assert(kt_term_dirty_rows_from_damage(&dirty,&dmg,8,16)==0&&dirty.first==0&&dirty.count==16);
+ assert(kt_term_display_present_rows(&dop,&s,&frame,dirty.first,dirty.count)==0&&s.presents==1);
+
+ /* Multiple changed cells on different rows merge deterministically. */
+ memset(&s,0,sizeof s);scr.cells[0].ch='A';scr.cells[3].ch='B';
+ assert(kt_term_render_incremental_damage(&scr,KT_TERM_PROFILE_ANSI,&cache,&ro,&s,&dmg)==0);
+ assert(dmg.cells_changed&&dmg.first_row==0&&dmg.row_count==2&&s.draws==2);
+ assert(kt_term_dirty_rows_from_damage(&dirty,&dmg,8,16)==0&&dirty.first==0&&dirty.count==16);
+
+ /* Pixel-height clipping: terminal row 1 reaches only scanlines 8..12. */
+ memset(&s,0,sizeof s);scr.cells[2].ch='C';
+ assert(kt_term_render_incremental_damage(&scr,KT_TERM_PROFILE_ANSI,&cache,&ro,&s,&dmg)==0);
+ assert(dmg.cells_changed&&dmg.first_row==1);
+ assert(kt_term_dirty_rows_from_damage(&dirty,&dmg,8,13)==0&&dirty.first==8&&dirty.count==5);
  return 0;
 }
