@@ -37,3 +37,16 @@ int kt_term_render_incremental(const kt_term_screen*s,uint8_t profile,
  cache->width=s->width;cache->height=s->height;cache->cursor_x=s->x;cache->cursor_y=s->y;cache->profile=profile;cache->valid=1u;
  if(ops->end_frame)ops->end_frame(ctx);return 0;
 }
+
+int kt_term_render_bitmap(const kt_term_screen*s,uint8_t profile,
+ const kt_term_font_ops*font,void*font_ctx,const kt_term_bitmap_renderer_ops*ops,void*ctx){
+ size_t i,n;if(!s||!font||!ops||!ops->draw_bitmap_cell)return -1;
+ n=(size_t)s->width*s->height;if(ops->begin_frame)ops->begin_frame(ctx,s->width,s->height);
+ for(i=0;i<n;i++){kt_term_bitmap_render_cell r;int q;
+  r.cell.x=(uint16_t)(i%s->width);r.cell.y=(uint16_t)(i/s->width);
+  r.cell.glyph=kt_term_resolve_glyph(profile,s->cells[i].ch,s->cells[i].charset);r.cell.attr=s->cells[i].attr;
+  q=kt_term_font_resolve(font,font_ctx,&r.cell.glyph,&r.bitmap);if(q!=0)return q;
+  ops->draw_bitmap_cell(ctx,&r);
+ }
+ if(ops->draw_cursor)ops->draw_cursor(ctx,s->x,s->y);if(ops->end_frame)ops->end_frame(ctx);return 0;
+}
