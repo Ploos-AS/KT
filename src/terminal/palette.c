@@ -18,3 +18,9 @@ int kt_term_palette_for_profile(uint8_t profile,uint8_t*out){
  else return -1;
  return 0;
 }
+
+int kt_term_palette_convert_rgb24(uint8_t p,const uint8_t*src,uint16_t w,uint16_t h,size_t ss,uint8_t*dst,size_t ds){
+ uint16_t x,y;if(!src||!dst||!w||!h||ss<w||ds<(size_t)w*3u||!kt_term_palette_size(p))return -1;
+ for(y=0;y<h;y++)for(x=0;x<w;x++){kt_term_rgb c;uint8_t i=src[(size_t)y*ss+x];if(kt_term_palette_lookup(p,i,&c)!=0)return -2;dst[(size_t)y*ds+(size_t)x*3u]=c.r;dst[(size_t)y*ds+(size_t)x*3u+1u]=c.g;dst[(size_t)y*ds+(size_t)x*3u+2u]=c.b;}
+ return 0;
+}
