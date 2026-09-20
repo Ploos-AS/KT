@@ -24,6 +24,7 @@ typedef struct kt_term_render_cache {
     size_t cell_count;
     uint16_t width, height, cursor_x, cursor_y;
     uint8_t valid;
+    uint8_t profile;
 } kt_term_render_cache;
 
 /* Incremental renderer. Cache storage is caller-owned and must hold
