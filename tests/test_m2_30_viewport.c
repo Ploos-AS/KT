@@ -25,8 +25,10 @@ int main(void){
  assert(kt_term_viewport_resize(&v,648,488)==0&&v.cols==80&&v.rows==25&&v.offset_x==4&&v.offset_y==44);
  { kt_term_viewport old=v;
    assert(kt_term_viewport_resize(&v,639,399)==-2);
-   /* Resize failure currently reports failure; fixed-grid policy remains selected. */
-   assert(v.mode==KT_TERM_VIEWPORT_FIXED&&v.fixed_cols==old.fixed_cols&&v.fixed_rows==old.fixed_rows);
+   assert(v.pixel_width==old.pixel_width&&v.pixel_height==old.pixel_height);
+   assert(v.cols==old.cols&&v.rows==old.rows&&v.used_width==old.used_width&&v.used_height==old.used_height);
+   assert(v.offset_x==old.offset_x&&v.offset_y==old.offset_y);
+   assert(v.mode==old.mode&&v.fixed_cols==old.fixed_cols&&v.fixed_rows==old.fixed_rows);
  }
  assert(kt_term_viewport_resize(&v,648,488)==0);
  assert(kt_term_viewport_set_fixed(&v,100,40)==-2&&v.cols==80&&v.rows==25&&v.fixed_cols==80&&v.fixed_rows==25);
