@@ -6,7 +6,11 @@ int main(void){
  unsigned i;
  for(i=0;i<sizeof b;i++)assert(kt_term_decode_codepoint(KT_TERM_PROFILE_CP437,b[i])==u[i]);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_ANSI,'A')==0x41u);
- assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,'A')==0x41u);
+ assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,0x41u)==0x41u);
+ assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,0x5Au)==0x5Au);
+ assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,0x61u)==0x41u);
+ assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,0x7Au)==0x5Au);
+ assert(kt_term_decode_codepoint(KT_TERM_PROFILE_PETSCII,'0')==0x30u);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_CP437,0xFFu)==0xFFFDu);
  return 0;
 }
