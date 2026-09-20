@@ -27,10 +27,11 @@ typedef struct kt_term_ops {
     void (*cursor_move)(void *, int16_t, int16_t);
     void (*cursor_position)(void *, uint16_t, uint16_t);
     void (*erase_display)(void *, uint8_t);
+    void (*set_charset)(void *, uint8_t);
 } kt_term_ops;
 typedef struct kt_term {
     const kt_term_ops *ops; void *ctx; kt_term_attr attr;
-    uint8_t parser_state, csi_count, csi_have_value, profile;
+    uint8_t parser_state, csi_count, csi_have_value, profile, charset;
     uint16_t csi_params[KT_TERM_CSI_MAX_PARAMS], csi_value;
 } kt_term;
 void kt_term_init(kt_term *, const kt_term_ops *, void *);
