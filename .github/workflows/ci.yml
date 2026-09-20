@@ -185,3 +185,11 @@ jobs:
             tests/test_m2_29_scheduler_display.c \
             -o /tmp/test_m2_29_scheduler_display
           /tmp/test_m2_29_scheduler_display
+
+      - name: Test M2.29 blink scheduling
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/screen.c src/terminal/dirty.c src/terminal/blink.c \
+            src/terminal/display.c src/terminal/scheduler.c \
+            tests/test_m2_29_blink.c -o /tmp/test_m2_29_blink
+          /tmp/test_m2_29_blink
