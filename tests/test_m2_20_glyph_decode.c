@@ -19,6 +19,12 @@ int main(void){
  assert(kt_term_decode_petscii(0xA1u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x258Cu);
  assert(kt_term_decode_petscii(0xA2u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x2584u);
  assert(kt_term_decode_petscii(0xA6u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x2592u);
+ assert(kt_term_decode_petscii(0xA7u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x2595u);
+ assert(kt_term_decode_petscii(0xA8u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x1FB8Fu);
+ assert(kt_term_decode_petscii(0xABu,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x251Cu);
+ assert(kt_term_decode_petscii(0xB0u,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x250Cu);
+ assert(kt_term_decode_petscii(0xBBu,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x2596u);
+ assert(kt_term_decode_petscii(0xBFu,KT_TERM_PETSCII_UPPER_GRAPHICS)==0x259Au);
  assert(kt_term_decode_petscii(0xA1u,KT_TERM_PETSCII_LOWER_UPPER)==0xFFFDu);
  assert(kt_term_decode_codepoint(KT_TERM_PROFILE_CP437,0xFFu)==0xFFFDu);
  return 0;
