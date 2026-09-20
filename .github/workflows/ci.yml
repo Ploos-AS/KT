@@ -161,3 +161,12 @@ jobs:
             src/terminal/dirty.c tests/test_m2_28_dirty.c \
             -o /tmp/test_m2_28_dirty
           /tmp/test_m2_28_dirty
+
+      - name: Test M2.28 damage to display E2E
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/screen.c src/terminal/terminal.c src/terminal/renderer.c \
+            src/terminal/font.c src/terminal/dirty.c src/terminal/display.c \
+            tests/test_m2_28_damage_e2e.c \
+            -o /tmp/test_m2_28_damage_e2e
+          /tmp/test_m2_28_damage_e2e
