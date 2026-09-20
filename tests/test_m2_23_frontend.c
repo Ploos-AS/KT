@@ -24,6 +24,8 @@ int main(void){
  s.draw=s.cursor=0;assert(kt_term_frontend_set_profile(&f,KT_TERM_PROFILE_CP437)==0);
  assert(kt_term_frontend_render(&f)==0&&s.draw==0u);
  kt_term_frontend_invalidate(&f);assert(kt_term_frontend_render(&f)==0&&s.draw==4u);
+ kt_term_frontend_invalidate(&f);s.draw=s.cursor=0;
+ assert(kt_term_frontend_render(&f)==0&&s.draw==4u&&s.cursor==1u);
  assert(kt_term_frontend_key(&f,KT_TERM_KEY_UP,0)==0&&s.n==3u&&!memcmp(s.wire,"\x1b[A",3));
  s.blocked=1;assert(kt_term_frontend_key(&f,KT_TERM_KEY_F12,KT_TERM_MOD_ALT)==0);
  assert(f.key_output.pending_len==7u);s.blocked=0;assert(kt_term_frontend_flush(&f)==0);
@@ -32,5 +34,12 @@ int main(void){
   assert(kt_term_frontend_init(&noout,&scr,KT_TERM_PROFILE_ANSI,&cc,&ro,&z,0,0)==0);
   assert(kt_term_frontend_key(&noout,KT_TERM_KEY_UP,0)==-1);
  }
+ {kt_term_frontend rof;kt_term_render_cache rc={cache_cells,4,0,0,0,0,0,0};
+  assert(kt_term_frontend_init(&rof,&scr,KT_TERM_PROFILE_ANSI,&rc,&ro,&s,0,0)==0);
+  assert(kt_term_frontend_render(&rof)==0);
+  assert(kt_term_frontend_key(&rof,KT_TERM_KEY_UP,0)==-1);
+  assert(kt_term_frontend_flush(&rof)==-1);
+ }
+ {kt_term_render_cache bad={0,4,0,0,0,0,0,0};assert(kt_term_frontend_init(&f,&scr,0,&bad,&ro,&s,&oo,&s)==-1);}
  return 0;
 }
