@@ -17,5 +17,11 @@ int main(void){
  {uint8_t clipmem[12];kt_term_raster cr;memset(clipmem,0xaa,sizeof clipmem);assert(kt_term_raster_init(&cr,&clipmem[1],10,1,10,6,1)==0);c.cell.x=1;c.cell.y=0;c.cell.attr.flags=0;c.bitmap.width=8;c.bitmap.height=1;c.bitmap.bitmap=glyph;c.bitmap.bitmap_size=1;kt_term_raster_draw_bitmap_cell(&cr,&c);assert(clipmem[0]==0xaa&&clipmem[11]==0xaa);}
  /* glyph smaller than cell: uncovered pixels are background */
  {uint8_t small[8];kt_term_raster sr;assert(kt_term_raster_init(&sr,small,8,1,8,8,1)==0);memset(small,9,sizeof small);c.cell.x=0;c.bitmap.width=4;c.bitmap.height=1;c.bitmap.bitmap=glyph;c.bitmap.bitmap_size=1;kt_term_raster_draw_bitmap_cell(&sr,&c);assert(small[4]==2&&small[7]==2);}
+ /* underline forces the final scanline on */
+ assert(kt_term_raster_init(&r,fb,8,8,10,8,8)==0);kt_term_raster_clear(&r,0);c.cell.x=0;c.cell.y=0;c.cell.attr.fg=7;c.cell.attr.bg=2;c.cell.attr.flags=KT_TERM_ATTR_UNDERLINE;c.bitmap.width=8;c.bitmap.height=8;c.bitmap.bitmap=glyph;c.bitmap.bitmap_size=8;kt_term_raster_draw_bitmap_cell(&r,&c);for(x=0;x<8;x++)assert(fb[7*10+x]==7);
+ /* blink phase hides glyph foreground but keeps background */
+ c.cell.attr.flags=KT_TERM_ATTR_BLINK;kt_term_raster_set_blink_phase(&r,0);kt_term_raster_draw_bitmap_cell(&r,&c);assert(fb[0]==2&&fb[7]==2);kt_term_raster_set_blink_phase(&r,1);kt_term_raster_draw_bitmap_cell(&r,&c);assert(fb[0]==7&&fb[7]==7);
+ /* cursor visibility is explicit and uses raster cursor colour */
+ kt_term_raster_clear(&r,0);r.fg=9;kt_term_raster_set_cursor_visible(&r,0);kt_term_raster_renderer_ops()->draw_cursor(&r,0,0);assert(fb[7*10]==0);kt_term_raster_set_cursor_visible(&r,1);kt_term_raster_renderer_ops()->draw_cursor(&r,0,0);for(x=0;x<8;x++)assert(fb[7*10+x]==9);
  assert(kt_term_raster_init(&r,fb,8,8,7,8,8)==-1);return 0;
 }
