@@ -125,3 +125,11 @@ jobs:
             tests/test_m2_24_bitmap_renderer.c \
             -o /tmp/test_m2_24_bitmap_renderer
           /tmp/test_m2_24_bitmap_renderer
+
+      - name: Test M2.24 bitmap renderer path
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/screen.c src/terminal/font.c src/terminal/renderer.c \
+            tests/test_m2_24_bitmap_renderer.c \
+            -o /tmp/test_m2_24_bitmap_renderer
+          /tmp/test_m2_24_bitmap_renderer
