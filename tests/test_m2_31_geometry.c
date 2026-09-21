@@ -32,5 +32,22 @@ int main(void){
    assert(kt_term_geometry_from_viewport(&g,&v)==0&&g.cols==80&&g.rows==25);
    assert(g.viewport_cols==100&&g.viewport_rows==37);
  }
+ { kt_term_geometry n;
+   assert(kt_term_geometry_init(&n,80,25)==0);
+   assert(kt_term_geometry_negotiate(&n,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,80,25)==0);
+   assert(n.remote_valid&&n.remote_cols==80&&n.remote_rows==25&&n.cols==80&&n.rows==25);
+   assert(kt_term_geometry_set_policy(&n,KT_TERM_GEOMETRY_REMOTE)==0);
+   assert(kt_term_geometry_negotiate(&n,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,132,43)==0);
+   assert(n.cols==132&&n.rows==43);
+   assert(kt_term_geometry_negotiate(&n,KT_TERM_GEOMETRY_SOURCE_SSH_PTY,100,40)==0);
+   assert(n.cols==100&&n.rows==40);
+   assert(kt_term_geometry_set_policy(&n,KT_TERM_GEOMETRY_FIXED)==0);
+   assert(kt_term_geometry_negotiate(&n,KT_TERM_GEOMETRY_SOURCE_LOCAL,120,37)==0);
+   assert(n.viewport_cols==120&&n.viewport_rows==37&&n.cols==80&&n.rows==25);
+   assert(kt_term_geometry_set_policy(&n,KT_TERM_GEOMETRY_VIEWPORT)==0&&n.cols==120&&n.rows==37);
+   assert(kt_term_geometry_negotiate(&n,(kt_term_geometry_source)99,80,25)==-2);
+   assert(kt_term_geometry_negotiate(&n,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,0,25)==-1);
+   assert(kt_term_geometry_negotiate(&n,KT_TERM_GEOMETRY_SOURCE_SSH_PTY,80,0)==-1);
+ }
  return 0;
 }
