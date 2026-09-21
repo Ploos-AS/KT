@@ -38,3 +38,17 @@ int kt_term_resize_apply(kt_term_session*s,kt_term_present_scheduler*sched,
  if(out){out->changed=1;out->dirty=d;}
  return 0;
 }
+
+int kt_term_resize_set_policy(kt_term_session*s,kt_term_present_scheduler*sched,
+                              kt_term_geometry_policy policy,uint8_t cell_height,
+                              uint16_t fb_height,kt_term_resize_result*out){
+ kt_term_geometry old;
+ int rc;
+ if(!s||!s->geometry)return -1;
+ old=*s->geometry;
+ rc=kt_term_geometry_set_policy(s->geometry,policy);
+ if(rc!=0)return rc;
+ rc=kt_term_resize_apply(s,sched,cell_height,fb_height,out);
+ if(rc!=0){*s->geometry=old;return rc;}
+ return 0;
+}
