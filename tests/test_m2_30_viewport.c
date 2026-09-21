@@ -18,6 +18,19 @@ int main(void){
    e.type=KT_TERM_EVENT_RESIZE;e.width=645;e.height=407;
    assert(kt_term_dispatch_event(&e,kt_term_viewport_resize_adapter_ops(),&a)==0);
    assert(v.pixel_width==645&&v.pixel_height==407&&v.cols==80&&v.rows==25);
+   assert(kt_term_viewport_resize_adapter_result(&a)==0);
+ }
+ { kt_term_viewport_resize_adapter a;kt_term_event e;kt_term_viewport old;
+   assert(kt_term_viewport_init(&v,640,480,8,16)==0);
+   assert(kt_term_viewport_set_fixed(&v,80,25)==0);
+   assert(kt_term_viewport_set_anchor(&v,KT_TERM_VIEWPORT_CENTER)==0);
+   old=v;kt_term_viewport_resize_adapter_init(&a,&v);
+   e.type=KT_TERM_EVENT_RESIZE;e.width=639;e.height=399;
+   assert(kt_term_dispatch_event(&e,kt_term_viewport_resize_adapter_ops(),&a)==0);
+   assert(kt_term_viewport_resize_adapter_result(&a)==-2);
+   assert(v.pixel_width==old.pixel_width&&v.pixel_height==old.pixel_height);
+   assert(v.cols==old.cols&&v.rows==old.rows&&v.used_width==old.used_width&&v.used_height==old.used_height);
+   assert(v.offset_x==old.offset_x&&v.offset_y==old.offset_y&&v.mode==old.mode);
  }
  assert(kt_term_viewport_init(&v,640,480,8,16)==0);
  assert(kt_term_viewport_set_fixed(&v,80,25)==0&&v.mode==KT_TERM_VIEWPORT_FIXED&&v.cols==80&&v.rows==25&&v.used_height==400);
