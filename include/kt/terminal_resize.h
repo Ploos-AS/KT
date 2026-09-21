@@ -20,5 +20,8 @@ int kt_term_resize_set_policy(kt_term_session *,kt_term_present_scheduler *,
 int kt_term_resize_negotiate(kt_term_session *,kt_term_present_scheduler *,
                              kt_term_geometry_source,uint16_t,uint16_t,
                              uint8_t,uint16_t,kt_term_resize_result *);
+int kt_term_resize_release_remote(kt_term_session *,kt_term_present_scheduler *,
+                                  kt_term_geometry_source,uint8_t,uint16_t,
+                                  kt_term_resize_result *);
 
 #endif
