@@ -25,4 +25,4 @@ int kt_term_geometry_set_viewport(kt_term_geometry*g,uint16_t c,uint16_t r){
 int kt_term_geometry_set_remote(kt_term_geometry*g,uint16_t c,uint16_t r){
  if(!g||!c||!r)return -1;g->remote_cols=c;g->remote_rows=r;g->remote_valid=1;return g->policy==KT_TERM_GEOMETRY_REMOTE?apply(g):0;
 }
-void kt_term_geometry_clear_remote(kt_term_geometry*g){if(g){g->remote_valid=0;if(g->policy==KT_TERM_GEOMETRY_REMOTE){g->cols=g->fixed_cols;g->rows=g->fixed_rows;}}}
+void kt_term_geometry_clear_remote(kt_term_geometry*g){if(g){g->remote_valid=0;if(g->policy==KT_TERM_GEOMETRY_REMOTE){g->policy=KT_TERM_GEOMETRY_FIXED;g->cols=g->fixed_cols;g->rows=g->fixed_rows;}}}
