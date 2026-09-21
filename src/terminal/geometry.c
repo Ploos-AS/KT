@@ -10,7 +10,7 @@ static int apply(kt_term_geometry*g){
 }
 int kt_term_geometry_init(kt_term_geometry*g,uint16_t c,uint16_t r){
  if(!g||!c||!r)return -1;g->cols=c;g->rows=r;g->fixed_cols=c;g->fixed_rows=r;
- g->viewport_cols=c;g->viewport_rows=r;g->remote_cols=0;g->remote_rows=0;g->remote_valid=0;
+ g->viewport_cols=c;g->viewport_rows=r;g->remote_cols=0;g->remote_rows=0;g->remote_valid=0;g->remote_source_valid=0;g->remote_source=0;
  g->policy=KT_TERM_GEOMETRY_FIXED;return 0;
 }
 int kt_term_geometry_set_policy(kt_term_geometry*g,kt_term_geometry_policy p){
@@ -29,12 +29,22 @@ int kt_term_geometry_from_viewport(kt_term_geometry*g,const kt_term_viewport*v){
 int kt_term_geometry_set_remote(kt_term_geometry*g,uint16_t c,uint16_t r){
  if(!g||!c||!r)return -1;g->remote_cols=c;g->remote_rows=r;g->remote_valid=1;return g->policy==KT_TERM_GEOMETRY_REMOTE?apply(g):0;
 }
-void kt_term_geometry_clear_remote(kt_term_geometry*g){if(g){g->remote_valid=0;if(g->policy==KT_TERM_GEOMETRY_REMOTE){g->policy=KT_TERM_GEOMETRY_FIXED;g->cols=g->fixed_cols;g->rows=g->fixed_rows;}}}
+void kt_term_geometry_clear_remote(kt_term_geometry*g){if(g){g->remote_valid=0;g->remote_source_valid=0;if(g->policy==KT_TERM_GEOMETRY_REMOTE){g->policy=KT_TERM_GEOMETRY_FIXED;g->cols=g->fixed_cols;g->rows=g->fixed_rows;}}}
+int kt_term_geometry_claim_remote(kt_term_geometry*g,kt_term_geometry_source source){
+ if(!g||(source!=KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS&&source!=KT_TERM_GEOMETRY_SOURCE_SSH_PTY))return -1;
+ if(g->remote_source_valid&&g->remote_source!=(uint8_t)source)return -2;
+ g->remote_source=(uint8_t)source;g->remote_source_valid=1;return 0;
+}
+void kt_term_geometry_release_remote(kt_term_geometry*g,kt_term_geometry_source source){
+ if(g&&g->remote_source_valid&&g->remote_source==(uint8_t)source)kt_term_geometry_clear_remote(g);
+}
 
 int kt_term_geometry_negotiate(kt_term_geometry*g,kt_term_geometry_source source,uint16_t c,uint16_t r){
  if(!g||!c||!r)return -1;
- if(source==KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS||source==KT_TERM_GEOMETRY_SOURCE_SSH_PTY)
+ if(source==KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS||source==KT_TERM_GEOMETRY_SOURCE_SSH_PTY){
+  if(kt_term_geometry_claim_remote(g,source)!=0)return -3;
   return kt_term_geometry_set_remote(g,c,r);
+ }
  if(source==KT_TERM_GEOMETRY_SOURCE_LOCAL)
   return kt_term_geometry_set_viewport(g,c,r);
  return -2;
