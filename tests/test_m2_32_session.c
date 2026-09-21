@@ -50,5 +50,33 @@ int main(void){
  assert(screen.cursor_x==39&&screen.cursor_y==19);
  assert(memcmp(snapshot,cells,sizeof(cells))==0);
 
+ {
+  kt_term_geometry pg;
+  kt_term_screen ps;
+  kt_term_session ss;
+  kt_term_cell pcells[132*43];
+  kt_term_viewport vp;
+  memset(&ps,0,sizeof(ps));
+  assert(kt_term_geometry_init(&pg,80,25)==0);
+  assert(kt_term_session_init(&ss,&pg,&ps,pcells,132*43)==0);
+  mark(&ps,5,5,'V');
+  assert(kt_term_viewport_init(&vp,640,480,8,16)==0);
+  assert(kt_term_geometry_from_viewport(&pg,&vp)==0);
+  assert(pg.cols==80&&pg.rows==25);
+  assert(kt_term_geometry_set_policy(&pg,KT_TERM_GEOMETRY_VIEWPORT)==0);
+  assert(pg.cols==80&&pg.rows==30);
+  assert(kt_term_session_apply_geometry(&ss)==0);
+  assert(ps.width==80&&ps.height==30&&at(&ps,5,5)=='V');
+
+  assert(kt_term_geometry_negotiate(&pg,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,132,43)==0);
+  assert(kt_term_geometry_set_policy(&pg,KT_TERM_GEOMETRY_REMOTE)==0);
+  assert(kt_term_session_apply_geometry(&ss)==0);
+  assert(ps.width==132&&ps.height==43&&at(&ps,5,5)=='V');
+
+  kt_term_geometry_release_remote(&pg,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS);
+  assert(pg.policy==KT_TERM_GEOMETRY_FIXED&&pg.cols==80&&pg.rows==25);
+  assert(kt_term_session_apply_geometry(&ss)==0);
+  assert(ps.width==80&&ps.height==25&&at(&ps,5,5)=='V');
+ }
  return 0;
 }
