@@ -68,5 +68,38 @@ int main(void){
   assert(pr.dirty.valid&&pr.dirty.first==0&&pr.dirty.count==688);
   assert(psched.pending&&psched.first_row==0&&psched.count==688);
  }
+ {
+  kt_term_geometry ng;
+  kt_term_screen ns;
+  kt_term_session nss;
+  kt_term_cell ncells[132*43],snap[132*43];
+  kt_term_present_scheduler nsched,sched_snap;
+  kt_term_resize_result nr;
+  memset(&ns,0,sizeof(ns));
+  assert(kt_term_geometry_init(&ng,80,25)==0);
+  assert(kt_term_session_init(&nss,&ng,&ns,ncells,80*25)==0);
+  assert(kt_term_geometry_negotiate(&ng,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,80,25)==0);
+  assert(kt_term_geometry_set_policy(&ng,KT_TERM_GEOMETRY_REMOTE)==0);
+  ncells[7].ch='N';
+  kt_term_present_scheduler_reset(&nsched);
+  memcpy(snap,ncells,sizeof(ncells));sched_snap=nsched;
+
+  assert(kt_term_resize_negotiate(&nss,&nsched,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,
+                                  132,43,16,688,&nr)==-3);
+  assert(ng.policy==KT_TERM_GEOMETRY_REMOTE&&ng.cols==80&&ng.rows==25);
+  assert(ng.remote_valid&&ng.remote_cols==80&&ng.remote_rows==25);
+  assert(ng.remote_source_valid&&ng.remote_source==KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS);
+  assert(ns.width==80&&ns.height==25&&ncells[7].ch=='N');
+  assert(memcmp(snap,ncells,sizeof(ncells))==0);
+  assert(memcmp(&sched_snap,&nsched,sizeof(nsched))==0);
+
+  nss.cell_capacity=132*43;
+  assert(kt_term_resize_negotiate(&nss,&nsched,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,
+                                  132,43,16,688,&nr)==0);
+  assert(ng.cols==132&&ng.rows==43&&ng.remote_cols==132&&ng.remote_rows==43);
+  assert(ns.width==132&&ns.height==43&&ncells[7].ch=='N');
+  assert(nr.changed&&nr.dirty.valid&&nr.dirty.count==688);
+  assert(nsched.pending&&nsched.first_row==0&&nsched.count==688);
+ }
  return 0;
 }
