@@ -20,5 +20,17 @@ int main(void){
    assert(g.policy==old.policy&&g.cols==old.cols&&g.rows==old.rows);
  }
  assert(kt_term_geometry_init(&g,0,25)==-1);
+ { kt_term_viewport v;
+   assert(kt_term_viewport_init(&v,640,400,8,16)==0&&v.cols==80&&v.rows==25);
+   assert(kt_term_geometry_init(&g,80,25)==0);
+   assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_VIEWPORT)==0);
+   assert(kt_term_geometry_from_viewport(&g,&v)==0&&g.cols==80&&g.rows==25);
+   assert(kt_term_viewport_resize(&v,640,480)==0&&v.cols==80&&v.rows==30);
+   assert(kt_term_geometry_from_viewport(&g,&v)==0&&g.cols==80&&g.rows==30);
+   assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_FIXED)==0&&g.cols==80&&g.rows==25);
+   assert(kt_term_viewport_resize(&v,800,600)==0);
+   assert(kt_term_geometry_from_viewport(&g,&v)==0&&g.cols==80&&g.rows==25);
+   assert(g.viewport_cols==100&&g.viewport_rows==37);
+ }
  return 0;
 }
