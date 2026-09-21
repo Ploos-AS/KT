@@ -25,5 +25,11 @@ int kt_term_geometry_set_viewport(kt_term_geometry *,uint16_t,uint16_t);
 int kt_term_geometry_from_viewport(kt_term_geometry *,const kt_term_viewport *);
 int kt_term_geometry_set_remote(kt_term_geometry *,uint16_t,uint16_t);
 void kt_term_geometry_clear_remote(kt_term_geometry *);
+typedef enum kt_term_geometry_source {
+ KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS=0,
+ KT_TERM_GEOMETRY_SOURCE_SSH_PTY=1,
+ KT_TERM_GEOMETRY_SOURCE_LOCAL=2
+} kt_term_geometry_source;
+int kt_term_geometry_negotiate(kt_term_geometry *,kt_term_geometry_source,uint16_t,uint16_t);
 
 #endif
