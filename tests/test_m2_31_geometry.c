@@ -9,9 +9,8 @@ int main(void){
  assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_REMOTE)==0&&g.cols==132&&g.rows==43);
  assert(kt_term_geometry_set_remote(&g,100,40)==0&&g.cols==100&&g.rows==40);
  kt_term_geometry_clear_remote(&g);
- assert(!g.remote_valid&&g.cols==80&&g.rows==25);
- assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_REMOTE)==-2&&g.policy==KT_TERM_GEOMETRY_REMOTE);
- /* Policy was already REMOTE; unavailable remote geometry leaves fallback active. */
+ assert(!g.remote_valid&&g.cols==80&&g.rows==25&&g.policy==KT_TERM_GEOMETRY_FIXED);
+ assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_REMOTE)==-2&&g.policy==KT_TERM_GEOMETRY_FIXED);
  assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_FIXED)==0&&g.cols==80&&g.rows==25);
  assert(kt_term_geometry_set_fixed(&g,132,25)==0&&g.cols==132&&g.rows==25);
  assert(kt_term_geometry_set_policy(&g,KT_TERM_GEOMETRY_VIEWPORT)==0&&g.cols==80&&g.rows==30);
