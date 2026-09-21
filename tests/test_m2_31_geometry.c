@@ -68,5 +68,28 @@ int main(void){
    assert(o.policy==KT_TERM_GEOMETRY_FIXED&&o.cols==80&&o.rows==25);
    assert(!o.remote_valid&&!o.remote_source_valid);
  }
+ { kt_term_geometry l;
+   assert(kt_term_geometry_init(&l,80,25)==0);
+   assert(l.min_cols==1&&l.min_rows==1&&l.max_cols==512&&l.max_rows==256);
+   assert(kt_term_geometry_negotiate(&l,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,65535,65535)==-2);
+   assert(!l.remote_valid&&!l.remote_source_valid);
+   assert(kt_term_geometry_negotiate(&l,KT_TERM_GEOMETRY_SOURCE_SSH_PTY,513,25)==-2);
+   assert(!l.remote_valid&&!l.remote_source_valid);
+   assert(kt_term_geometry_negotiate(&l,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,512,256)==0);
+   assert(l.remote_valid&&l.remote_cols==512&&l.remote_rows==256);
+   kt_term_geometry_release_remote(&l,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS);
+   assert(kt_term_geometry_set_limits(&l,40,20,160,60)==0);
+   assert(l.min_cols==40&&l.min_rows==20&&l.max_cols==160&&l.max_rows==60);
+   assert(kt_term_geometry_set_fixed(&l,39,25)==-2);
+   assert(kt_term_geometry_set_viewport(&l,80,61)==-2);
+   assert(kt_term_geometry_negotiate(&l,KT_TERM_GEOMETRY_SOURCE_SSH_PTY,160,60)==0);
+   assert(kt_term_geometry_set_policy(&l,KT_TERM_GEOMETRY_REMOTE)==0);
+   assert(l.cols==160&&l.rows==60);
+   assert(kt_term_geometry_set_limits(&l,80,25,132,50)==-2);
+   assert(l.min_cols==40&&l.min_rows==20&&l.max_cols==160&&l.max_rows==60);
+   assert(l.policy==KT_TERM_GEOMETRY_REMOTE&&l.cols==160&&l.rows==60);
+   assert(kt_term_geometry_set_limits(&l,0,1,160,60)==-1);
+   assert(kt_term_geometry_set_limits(&l,100,30,80,60)==-1);
+ }
  return 0;
 }
