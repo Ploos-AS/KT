@@ -232,3 +232,11 @@ jobs:
             src/terminal/display.c tests/test_m2_32_present_resize.c \
             -o /tmp/test_m2_32_present_resize
           /tmp/test_m2_32_present_resize
+
+      - name: Test M2.33 transactional resize orchestration
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry.c src/terminal/viewport.c src/terminal/session.c \
+            src/terminal/dirty.c src/terminal/scheduler.c src/terminal/resize.c \
+            tests/test_m2_33_resize.c -o /tmp/test_m2_33_resize
+          /tmp/test_m2_33_resize
