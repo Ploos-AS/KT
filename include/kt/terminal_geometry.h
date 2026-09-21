@@ -17,12 +17,14 @@ typedef struct kt_term_geometry {
  uint8_t remote_valid;
  uint8_t remote_source_valid;
  uint8_t remote_source;
+ uint16_t min_cols,min_rows,max_cols,max_rows;
  kt_term_geometry_policy policy;
 } kt_term_geometry;
 
 int kt_term_geometry_init(kt_term_geometry *,uint16_t,uint16_t);
 int kt_term_geometry_set_policy(kt_term_geometry *,kt_term_geometry_policy);
 int kt_term_geometry_set_fixed(kt_term_geometry *,uint16_t,uint16_t);
+int kt_term_geometry_set_limits(kt_term_geometry *,uint16_t,uint16_t,uint16_t,uint16_t);
 int kt_term_geometry_set_viewport(kt_term_geometry *,uint16_t,uint16_t);
 int kt_term_geometry_from_viewport(kt_term_geometry *,const kt_term_viewport *);
 int kt_term_geometry_set_remote(kt_term_geometry *,uint16_t,uint16_t);
