@@ -15,6 +15,8 @@ typedef struct kt_term_geometry {
  uint16_t viewport_cols,viewport_rows;
  uint16_t remote_cols,remote_rows;
  uint8_t remote_valid;
+ uint8_t remote_source_valid;
+ uint8_t remote_source;
  kt_term_geometry_policy policy;
 } kt_term_geometry;
 
@@ -31,5 +33,7 @@ typedef enum kt_term_geometry_source {
  KT_TERM_GEOMETRY_SOURCE_LOCAL=2
 } kt_term_geometry_source;
 int kt_term_geometry_negotiate(kt_term_geometry *,kt_term_geometry_source,uint16_t,uint16_t);
+int kt_term_geometry_claim_remote(kt_term_geometry *,kt_term_geometry_source);
+void kt_term_geometry_release_remote(kt_term_geometry *,kt_term_geometry_source);
 
 #endif
