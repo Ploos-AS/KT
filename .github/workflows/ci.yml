@@ -200,3 +200,11 @@ jobs:
             src/terminal/viewport.c src/terminal/event.c src/terminal/key_encode.c tests/test_m2_30_viewport.c \
             -o /tmp/test_m2_30_viewport
           /tmp/test_m2_30_viewport
+
+      - name: Test M2.31 terminal geometry policy
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/viewport.c src/terminal/event.c src/terminal/key_encode.c \
+            src/terminal/geometry.c tests/test_m2_31_geometry.c \
+            -o /tmp/test_m2_31_geometry
+          /tmp/test_m2_31_geometry
