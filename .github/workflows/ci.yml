@@ -208,3 +208,27 @@ jobs:
             src/terminal/geometry.c tests/test_m2_31_geometry.c \
             -o /tmp/test_m2_31_geometry
           /tmp/test_m2_31_geometry
+
+      - name: Test M2.32 terminal session resize
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry.c src/terminal/viewport.c src/terminal/session.c \
+            tests/test_m2_32_session.c -o /tmp/test_m2_32_session
+          /tmp/test_m2_32_session
+
+      - name: Test M2.32 renderer resize integration
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry.c src/terminal/session.c src/terminal/renderer.c \
+            src/terminal/screen.c tests/test_m2_32_render_resize.c \
+            -o /tmp/test_m2_32_render_resize
+          /tmp/test_m2_32_render_resize
+
+      - name: Test M2.32 presentation resize integration
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry.c src/terminal/session.c src/terminal/renderer.c \
+            src/terminal/screen.c src/terminal/dirty.c src/terminal/scheduler.c \
+            src/terminal/display.c tests/test_m2_32_present_resize.c \
+            -o /tmp/test_m2_32_present_resize
+          /tmp/test_m2_32_present_resize
