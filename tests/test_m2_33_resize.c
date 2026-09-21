@@ -41,5 +41,32 @@ int main(void){
  assert(kt_term_resize_apply(0,&sched,16,480,&result)==-1);
  assert(kt_term_resize_apply(&session,&sched,0,480,&result)==-1);
  assert(kt_term_resize_apply(&session,&sched,16,0,&result)==-1);
+ {
+  kt_term_geometry pg;
+  kt_term_screen ps;
+  kt_term_session ss;
+  kt_term_cell pcells[132*43];
+  kt_term_present_scheduler psched;
+  kt_term_resize_result pr;
+  memset(&ps,0,sizeof(ps));
+  assert(kt_term_geometry_init(&pg,80,25)==0);
+  assert(kt_term_session_init(&ss,&pg,&ps,pcells,80*25)==0);
+  assert(kt_term_geometry_negotiate(&pg,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,132,43)==0);
+  assert(pg.policy==KT_TERM_GEOMETRY_FIXED&&pg.cols==80&&pg.rows==25);
+  kt_term_present_scheduler_reset(&psched);
+  assert(kt_term_resize_set_policy(&ss,&psched,KT_TERM_GEOMETRY_REMOTE,16,688,&pr)==-3);
+  assert(pg.policy==KT_TERM_GEOMETRY_FIXED&&pg.cols==80&&pg.rows==25);
+  assert(pg.remote_valid&&pg.remote_cols==132&&pg.remote_rows==43);
+  assert(ps.width==80&&ps.height==25);
+  assert(!psched.pending);
+
+  ss.cell_capacity=132*43;
+  assert(kt_term_resize_set_policy(&ss,&psched,KT_TERM_GEOMETRY_REMOTE,16,688,&pr)==0);
+  assert(pg.policy==KT_TERM_GEOMETRY_REMOTE&&pg.cols==132&&pg.rows==43);
+  assert(ps.width==132&&ps.height==43);
+  assert(pr.changed&&pr.old_cols==80&&pr.old_rows==25&&pr.new_cols==132&&pr.new_rows==43);
+  assert(pr.dirty.valid&&pr.dirty.first==0&&pr.dirty.count==688);
+  assert(psched.pending&&psched.first_row==0&&psched.count==688);
+ }
  return 0;
 }
