@@ -18,13 +18,17 @@ int kt_term_session_init(kt_term_session*s,kt_term_geometry*g,kt_term_screen*scr
  size_t need,i;
  if(!s||!g||!screen||!cells||!capacity)return -1;
  if(required_cells(g->cols,g->rows,&need)!=0||need>capacity)return -3;
- s->geometry=g;s->screen=screen;s->cells=cells;s->cell_capacity=capacity;
+ s->geometry=g;s->screen=screen;s->cells=cells;s->cell_capacity=capacity;s->render_cache=0;
  screen->cells=cells;screen->width=g->cols;screen->height=g->rows;
  screen->cursor_x=0;screen->cursor_y=0;
  screen->attr.fg=7;screen->attr.bg=0;screen->attr.flags=0;
  screen->charset=KT_TERM_PETSCII_UPPER_GRAPHICS;
  for(i=0;i<need;i++)blank_cell(&cells[i],&screen->attr);
  return 0;
+}
+
+void kt_term_session_bind_render_cache(kt_term_session*s,kt_term_render_cache*cache){
+ if(s){s->render_cache=cache;if(cache)cache->valid=0;}
 }
 
 int kt_term_session_apply_geometry(kt_term_session*s){
@@ -48,5 +52,6 @@ int kt_term_session_apply_geometry(kt_term_session*s){
  s->screen->width=nw;s->screen->height=nh;s->screen->cells=cells;
  if(s->screen->cursor_x>=nw)s->screen->cursor_x=(uint16_t)(nw-1);
  if(s->screen->cursor_y>=nh)s->screen->cursor_y=(uint16_t)(nh-1);
+ if(s->render_cache)s->render_cache->valid=0;
  return 0;
 }
