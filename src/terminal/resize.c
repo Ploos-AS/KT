@@ -67,3 +67,26 @@ int kt_term_resize_negotiate(kt_term_session*s,kt_term_present_scheduler*sched,
  if(rc!=0){*s->geometry=old;return rc;}
  return 0;
 }
+
+int kt_term_resize_release_remote(kt_term_session*s,kt_term_present_scheduler*sched,
+                                  kt_term_geometry_source source,uint8_t cell_height,
+                                  uint16_t fb_height,kt_term_resize_result*out){
+ kt_term_geometry old;
+ int rc;
+ if(!s||!s->geometry)return -1;
+ old=*s->geometry;
+ kt_term_geometry_release_remote(s->geometry,source);
+ /* A non-owner release is deliberately a no-op. */
+ if(s->geometry->remote_source_valid==old.remote_source_valid&&
+    s->geometry->remote_valid==old.remote_valid&&
+    s->geometry->policy==old.policy&&s->geometry->cols==old.cols&&
+    s->geometry->rows==old.rows){
+  if(out){out->old_cols=s->screen->width;out->old_rows=s->screen->height;
+   out->new_cols=s->screen->width;out->new_rows=s->screen->height;
+   out->changed=0;kt_term_dirty_rows_reset(&out->dirty);}
+  return 0;
+ }
+ rc=kt_term_resize_apply(s,sched,cell_height,fb_height,out);
+ if(rc!=0){*s->geometry=old;return rc;}
+ return 0;
+}
