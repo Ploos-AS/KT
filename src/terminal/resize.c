@@ -5,8 +5,8 @@ int kt_term_resize_apply(kt_term_session*s,kt_term_present_scheduler*sched,
                          kt_term_resize_result*out){
  uint16_t ow,oh,nw,nh;
  kt_term_dirty_rows d;
- kt_term_present_scheduler sched_old;
- uint8_t cache_valid=0,have_cache=0;
+ kt_term_present_scheduler sched_new;
+ uint8_t have_sched=0;
  int rc;
  (void)cell_height;
  if(!s||!s->screen||!s->geometry||!cell_height||!fb_height)return -1;
@@ -18,23 +18,17 @@ int kt_term_resize_apply(kt_term_session*s,kt_term_present_scheduler*sched,
  /* Preflight all operations that can fail before mutating screen state. */
  if((size_t)nw>(size_t)-1/(size_t)nh)return -2;
  if((size_t)nw*(size_t)nh>s->cell_capacity)return -3;
- if(sched)sched_old=*sched;
- if(s->render_cache){have_cache=1;cache_valid=s->render_cache->valid;}
+ d.first=0;d.count=fb_height;d.valid=1;
+ if(sched){
+  sched_new=*sched;
+  rc=kt_term_present_scheduler_add_rows(&sched_new,&d);
+  if(rc<0)return -4;
+  have_sched=1;
+ }
 
  rc=kt_term_session_apply_geometry(s);
  if(rc!=0)return rc;
-
- d.first=0;d.count=fb_height;d.valid=1;
- if(sched){
-  rc=kt_term_present_scheduler_add_rows(sched,d.first,d.count);
-  if(rc<0){
-   /* Scheduler is caller-owned; restore it. Screen mutation is only reached
-      after scheduler arguments have been prevalidated by this boundary. */
-   *sched=sched_old;
-   if(have_cache)s->render_cache->valid=cache_valid;
-   return -4;
-  }
- }
+ if(have_sched)*sched=sched_new;
  if(out){out->changed=1;out->dirty=d;}
  return 0;
 }
