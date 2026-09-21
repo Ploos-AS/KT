@@ -30,3 +30,12 @@ int kt_term_geometry_set_remote(kt_term_geometry*g,uint16_t c,uint16_t r){
  if(!g||!c||!r)return -1;g->remote_cols=c;g->remote_rows=r;g->remote_valid=1;return g->policy==KT_TERM_GEOMETRY_REMOTE?apply(g):0;
 }
 void kt_term_geometry_clear_remote(kt_term_geometry*g){if(g){g->remote_valid=0;if(g->policy==KT_TERM_GEOMETRY_REMOTE){g->policy=KT_TERM_GEOMETRY_FIXED;g->cols=g->fixed_cols;g->rows=g->fixed_rows;}}}
+
+int kt_term_geometry_negotiate(kt_term_geometry*g,kt_term_geometry_source source,uint16_t c,uint16_t r){
+ if(!g||!c||!r)return -1;
+ if(source==KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS||source==KT_TERM_GEOMETRY_SOURCE_SSH_PTY)
+  return kt_term_geometry_set_remote(g,c,r);
+ if(source==KT_TERM_GEOMETRY_SOURCE_LOCAL)
+  return kt_term_geometry_set_viewport(g,c,r);
+ return -2;
+}
