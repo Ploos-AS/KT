@@ -56,7 +56,7 @@ int kt_term_resize_negotiate(kt_term_session*s,kt_term_present_scheduler*sched,
  if(!s||!s->geometry)return -1;
  old=*s->geometry;
  rc=kt_term_geometry_negotiate(s->geometry,source,cols,rows);
- if(rc!=0)return rc;
+ if(rc!=0){*s->geometry=old;return rc;}
  rc=kt_term_resize_apply(s,sched,cell_height,fb_height,out);
  if(rc!=0){*s->geometry=old;return rc;}
  return 0;
