@@ -50,8 +50,10 @@ void kt_term_geometry_release_remote(kt_term_geometry*g,kt_term_geometry_source 
 int kt_term_geometry_negotiate(kt_term_geometry*g,kt_term_geometry_source source,uint16_t c,uint16_t r){
  if(!g||!c||!r)return -1;
  if(source==KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS||source==KT_TERM_GEOMETRY_SOURCE_SSH_PTY){
+  kt_term_geometry old=*g;
   if(kt_term_geometry_claim_remote(g,source)!=0)return -3;
-  return kt_term_geometry_set_remote(g,c,r);
+  if(kt_term_geometry_set_remote(g,c,r)!=0){*g=old;return -2;}
+  return 0;
  }
  if(source==KT_TERM_GEOMETRY_SOURCE_LOCAL)
   return kt_term_geometry_set_viewport(g,c,r);
