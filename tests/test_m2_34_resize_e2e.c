@@ -33,6 +33,20 @@ int main(void){
  kt_term_present_scheduler_reset(&sched);
  cells[9].ch='E';
 
+ /* Invalid untrusted geometry must not claim ownership or mutate state. */
+ {
+  kt_term_geometry before=g;
+  unsigned calls_before=(unsigned)events.valid[KT_TERM_GEOMETRY_SOURCE_SSH_PTY];
+  assert(kt_term_geometry_event_emit(&events,ops,&adapter,
+         KT_TERM_GEOMETRY_SOURCE_SSH_PTY,65535,65535)==-2);
+  assert(memcmp(&g,&before,sizeof(g))==0);
+  assert((unsigned)events.valid[KT_TERM_GEOMETRY_SOURCE_SSH_PTY]==calls_before);
+  assert(g.remote_source_valid);
+  assert(g.remote_source==(uint8_t)KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS);
+  assert(screen.width==80&&screen.height==25);
+  assert(!sched.pending);
+ }
+
  /* Event callback reaches M2.33, fails capacity, and must not be consumed. */
  assert(kt_term_geometry_event_emit(&events,ops,&adapter,
         KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS,132,43)==-3);
