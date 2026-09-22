@@ -240,3 +240,19 @@ jobs:
             src/terminal/dirty.c src/terminal/scheduler.c src/terminal/resize.c \
             tests/test_m2_33_resize.c -o /tmp/test_m2_33_resize
           /tmp/test_m2_33_resize
+
+      - name: Test M2.34 normalized geometry events
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry_event.c src/terminal/geometry.c src/terminal/session.c \
+            src/terminal/resize.c src/terminal/dirty.c src/terminal/scheduler.c \
+            tests/test_m2_34_geometry_event.c -o /tmp/test_m2_34_geometry_event
+          /tmp/test_m2_34_geometry_event
+
+      - name: Test M2.34 geometry event resize E2E
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry_event.c src/terminal/geometry.c src/terminal/session.c \
+            src/terminal/resize.c src/terminal/dirty.c src/terminal/scheduler.c \
+            tests/test_m2_34_resize_e2e.c -o /tmp/test_m2_34_resize_e2e
+          /tmp/test_m2_34_resize_e2e
