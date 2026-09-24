@@ -23,4 +23,10 @@ int kt_term_geometry_session_viewport(kt_term_geometry_session *,
                                       const kt_term_viewport *);
 int kt_term_geometry_session_disconnect(kt_term_geometry_session *,
                                         kt_term_geometry_source);
+int kt_term_geometry_session_activate_remote(kt_term_geometry_session *,
+                                              kt_term_geometry_source);
+int kt_term_geometry_session_connect_telnet(kt_term_geometry_session *,
+                                            const uint8_t *,size_t);
+int kt_term_geometry_session_connect_ssh(kt_term_geometry_session *,
+                                         const uint8_t *,size_t);
 #endif
