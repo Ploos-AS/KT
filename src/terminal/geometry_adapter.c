@@ -23,3 +23,11 @@ int kt_term_geometry_from_ssh_pty(kt_term_geometry_event_state*state,
  return kt_term_geometry_event_emit(state,ops,ctx,
         KT_TERM_GEOMETRY_SOURCE_SSH_PTY,cols,rows);
 }
+
+int kt_term_geometry_from_viewport(kt_term_geometry_event_state*state,
+                                   const kt_term_geometry_event_ops*ops,void*ctx,
+                                   const kt_term_viewport*viewport){
+ if(!state||!ops||!viewport||!viewport->cols||!viewport->rows)return -1;
+ return kt_term_geometry_event_emit(state,ops,ctx,
+        KT_TERM_GEOMETRY_SOURCE_LOCAL,viewport->cols,viewport->rows);
+}
