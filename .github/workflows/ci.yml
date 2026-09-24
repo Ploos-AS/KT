@@ -286,3 +286,15 @@ jobs:
             src/terminal/resize.c src/terminal/dirty.c src/terminal/scheduler.c \
             tests/test_m2_35_adapter_e2e.c -o /tmp/test_m2_35_adapter_e2e
           /tmp/test_m2_35_adapter_e2e
+
+      - name: Test M2.36 geometry session binding
+        run: |
+          for test in tests/test_m2_36_geometry_session.c tests/test_m2_36_geometry_ownership.c; do
+            out="/tmp/$(basename "$test" .c)"
+            cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+              src/terminal/geometry_session.c src/terminal/geometry_adapter.c \
+              src/terminal/geometry_event.c src/terminal/geometry.c \
+              src/terminal/viewport.c src/terminal/session.c src/terminal/resize.c \
+              src/terminal/dirty.c src/terminal/scheduler.c "$test" -o "$out"
+            "$out"
+          done
