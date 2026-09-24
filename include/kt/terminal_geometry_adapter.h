@@ -10,4 +10,7 @@ int kt_term_geometry_from_telnet_naws(kt_term_geometry_event_state *,
 int kt_term_geometry_from_ssh_pty(kt_term_geometry_event_state *,
                                   const kt_term_geometry_event_ops *,void *,
                                   const uint8_t *,size_t);
+int kt_term_geometry_from_viewport(kt_term_geometry_event_state *,
+                                   const kt_term_geometry_event_ops *,void *,
+                                   const kt_term_viewport *);
 #endif
