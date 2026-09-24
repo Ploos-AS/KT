@@ -42,3 +42,29 @@ int kt_term_geometry_session_disconnect(kt_term_geometry_session*g,
  if(rc==0)g->events.valid[i]=0;
  return rc;
 }
+
+int kt_term_geometry_session_activate_remote(kt_term_geometry_session*g,
+                                              kt_term_geometry_source source){
+ kt_term_geometry *geom;
+ if(!g||!g->resize.session||!g->resize.session->geometry)return -1;
+ if(source!=KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS&&
+    source!=KT_TERM_GEOMETRY_SOURCE_SSH_PTY)return -1;
+ geom=g->resize.session->geometry;
+ if(!geom->remote_valid||!geom->remote_source_valid||
+    geom->remote_source!=(uint8_t)source)return -2;
+ return kt_term_resize_set_policy(g->resize.session,g->resize.scheduler,
+        KT_TERM_GEOMETRY_REMOTE,g->resize.cell_height,g->resize.fb_height,
+        g->resize.result);
+}
+int kt_term_geometry_session_connect_telnet(kt_term_geometry_session*g,
+                                            const uint8_t*data,size_t len){
+ int rc=kt_term_geometry_session_telnet_naws(g,data,len);
+ if(rc<0)return rc;
+ return kt_term_geometry_session_activate_remote(g,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS);
+}
+int kt_term_geometry_session_connect_ssh(kt_term_geometry_session*g,
+                                         const uint8_t*data,size_t len){
+ int rc=kt_term_geometry_session_ssh_pty(g,data,len);
+ if(rc<0)return rc;
+ return kt_term_geometry_session_activate_remote(g,KT_TERM_GEOMETRY_SOURCE_SSH_PTY);
+}
