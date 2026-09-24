@@ -51,7 +51,9 @@ M2.0 freezes the W65C265S platform baseline, native 24-bit memory direction, rea
 
 M2.35 is IMPLEMENTED / CI PENDING: allocation-free Telnet NAWS, SSH PTY and local viewport adapters feed the normalized M2.34 boundary, preserve duplicate/retry semantics, and have strict-C99 unit plus end-to-end coverage through M2.33 transactional resize.
 
-M2.36 starts terminal geometry session binding: bind the M2.35 adapters and M2.34 event state into one caller-owned session-facing geometry endpoint, with explicit initialization/reset, transport/frontend entry points, remote disconnect handling, and no protocol-specific state in the terminal core.
+M2.36 is IMPLEMENTED / CI PENDING: one caller-owned geometry session binds M2.35 adapters, M2.34 event state and M2.33 transactional resize, with Telnet/SSH/local entry points, exclusive remote ownership, disconnect fallback, reconnect-safe duplicate state and strict-C99 session tests.
+
+M2.37 starts terminal geometry lifecycle integration: define explicit connect/activate/update/disconnect lifecycle helpers around the M2.36 session so transports can switch geometry policy without open-coded sequencing, while preserving transactional rollback and ownership rules.
 
 Integrate and freeze the W65C265S-based CPU/memory architecture. K8 compatibility is explicitly not a goal and K8 is not changed.
 
