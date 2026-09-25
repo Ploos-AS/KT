@@ -84,3 +84,25 @@ int kt_term_geometry_session_connect_viewport(kt_term_geometry_session*g,
  if(rc<0)return rc;
  return kt_term_geometry_session_activate_viewport(g);
 }
+
+int kt_term_geometry_session_snapshot(const kt_term_geometry_session*g,
+                                      kt_term_geometry_snapshot*out){
+ const kt_term_session *s;
+ const kt_term_geometry *geom;
+ if(!g||!out||!g->resize.session)return -1;
+ s=g->resize.session;
+ if(!s->geometry||!s->screen)return -1;
+ geom=s->geometry;
+ out->policy=geom->policy;
+ out->screen_cols=s->screen->width;
+ out->screen_rows=s->screen->height;
+ out->viewport_cols=geom->viewport_cols;
+ out->viewport_rows=geom->viewport_rows;
+ out->remote_cols=geom->remote_cols;
+ out->remote_rows=geom->remote_rows;
+ out->remote_valid=geom->remote_valid;
+ out->remote_source_valid=geom->remote_source_valid;
+ out->remote_source=geom->remote_source_valid?
+  (kt_term_geometry_source)geom->remote_source:KT_TERM_GEOMETRY_SOURCE_LOCAL;
+ return 0;
+}
