@@ -68,3 +68,19 @@ int kt_term_geometry_session_connect_ssh(kt_term_geometry_session*g,
  if(rc<0)return rc;
  return kt_term_geometry_session_activate_remote(g,KT_TERM_GEOMETRY_SOURCE_SSH_PTY);
 }
+
+int kt_term_geometry_session_activate_viewport(kt_term_geometry_session*g){
+ kt_term_geometry *geom;
+ if(!g||!g->resize.session||!g->resize.session->geometry)return -1;
+ geom=g->resize.session->geometry;
+ if(!geom->viewport_cols||!geom->viewport_rows)return -2;
+ return kt_term_resize_set_policy(g->resize.session,g->resize.scheduler,
+        KT_TERM_GEOMETRY_VIEWPORT,g->resize.cell_height,g->resize.fb_height,
+        g->resize.result);
+}
+int kt_term_geometry_session_connect_viewport(kt_term_geometry_session*g,
+                                              const kt_term_viewport*v){
+ int rc=kt_term_geometry_session_viewport(g,v);
+ if(rc<0)return rc;
+ return kt_term_geometry_session_activate_viewport(g);
+}
