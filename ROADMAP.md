@@ -53,7 +53,9 @@ M2.35 is IMPLEMENTED / CI PENDING: allocation-free Telnet NAWS, SSH PTY and loca
 
 M2.36 is IMPLEMENTED / CI PENDING: one caller-owned geometry session binds M2.35 adapters, M2.34 event state and M2.33 transactional resize, with Telnet/SSH/local entry points, exclusive remote ownership, disconnect fallback, reconnect-safe duplicate state and strict-C99 session tests.
 
-M2.37 starts terminal geometry lifecycle integration: define explicit connect/activate/update/disconnect lifecycle helpers around the M2.36 session so transports can switch geometry policy without open-coded sequencing, while preserving transactional rollback and ownership rules.
+M2.37 is IMPLEMENTED / CI PENDING: lifecycle helpers provide explicit remote activation plus Telnet/SSH connect operations around M2.36, with transactional connect/update/disconnect behavior, capacity-failure retry, cross-transport ownership exclusion and takeover after owner disconnect.
+
+M2.38 starts local frontend geometry lifecycle integration: bind viewport resize/update and VIEWPORT policy activation into explicit session helpers, including local resize failure/retry and deterministic switching between local VIEWPORT and remote transport ownership.
 
 Integrate and freeze the W65C265S-based CPU/memory architecture. K8 compatibility is explicitly not a goal and K8 is not changed.
 
