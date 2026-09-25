@@ -29,4 +29,7 @@ int kt_term_geometry_session_connect_telnet(kt_term_geometry_session *,
                                             const uint8_t *,size_t);
 int kt_term_geometry_session_connect_ssh(kt_term_geometry_session *,
                                          const uint8_t *,size_t);
+int kt_term_geometry_session_activate_viewport(kt_term_geometry_session *);
+int kt_term_geometry_session_connect_viewport(kt_term_geometry_session *,
+                                              const kt_term_viewport *);
 #endif
