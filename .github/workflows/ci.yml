@@ -310,3 +310,15 @@ jobs:
               src/terminal/dirty.c src/terminal/scheduler.c "$test" -o "$out"
             "$out"
           done
+
+      - name: Test M2.38 local geometry lifecycle
+        run: |
+          for test in tests/test_m2_38_viewport_lifecycle.c tests/test_m2_38_cross_policy.c; do
+            out="/tmp/$(basename "$test" .c)"
+            cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+              src/terminal/geometry_session.c src/terminal/geometry_adapter.c \
+              src/terminal/geometry_event.c src/terminal/geometry.c \
+              src/terminal/viewport.c src/terminal/session.c src/terminal/resize.c \
+              src/terminal/dirty.c src/terminal/scheduler.c "$test" -o "$out"
+            "$out"
+          done
