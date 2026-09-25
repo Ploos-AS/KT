@@ -55,7 +55,9 @@ M2.36 is IMPLEMENTED / CI PENDING: one caller-owned geometry session binds M2.35
 
 M2.37 is IMPLEMENTED / CI PENDING: lifecycle helpers provide explicit remote activation plus Telnet/SSH connect operations around M2.36, with transactional connect/update/disconnect behavior, capacity-failure retry, cross-transport ownership exclusion and takeover after owner disconnect.
 
-M2.38 starts local frontend geometry lifecycle integration: bind viewport resize/update and VIEWPORT policy activation into explicit session helpers, including local resize failure/retry and deterministic switching between local VIEWPORT and remote transport ownership.
+M2.38 is IMPLEMENTED / CI PENDING: local viewport connect/activation is integrated into the geometry session, with remembered local updates under REMOTE, transactional capacity-failure retry, deterministic VIEWPORT/REMOTE switching and strict-C99 cross-policy coverage.
+
+M2.39 starts terminal geometry lifecycle state reporting: expose a small read-only snapshot of active policy, screen geometry, stored viewport geometry and remote ownership so frontends/transports can inspect session state without reaching into geometry/session internals.
 
 Integrate and freeze the W65C265S-based CPU/memory architecture. K8 compatibility is explicitly not a goal and K8 is not changed.
 
