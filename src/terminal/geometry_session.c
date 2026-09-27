@@ -50,28 +50,30 @@ int kt_term_geometry_session_viewport(kt_term_geometry_session*g,
 }
 int kt_term_geometry_session_disconnect(kt_term_geometry_session*g,
                                         kt_term_geometry_source source){
- unsigned i=(unsigned)source;
- int rc;
+ unsigned i=(unsigned)source;int rc;kt_term_geometry_snapshot before;
  if(!g||!g->resize.session||i>2u||source==KT_TERM_GEOMETRY_SOURCE_LOCAL)return -1;
+ if(kt_term_geometry_session_snapshot(g,&before)!=0)return -1;
  rc=kt_term_resize_release_remote(g->resize.session,g->resize.scheduler,source,
                                   g->resize.cell_height,g->resize.fb_height,
                                   g->resize.result);
  if(rc==0)g->events.valid[i]=0;
- return rc;
+ return notify_after(g,&before,rc);
 }
 
 int kt_term_geometry_session_activate_remote(kt_term_geometry_session*g,
                                               kt_term_geometry_source source){
- kt_term_geometry *geom;
+ kt_term_geometry *geom;kt_term_geometry_snapshot before;int rc;
  if(!g||!g->resize.session||!g->resize.session->geometry)return -1;
  if(source!=KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS&&
     source!=KT_TERM_GEOMETRY_SOURCE_SSH_PTY)return -1;
  geom=g->resize.session->geometry;
  if(!geom->remote_valid||!geom->remote_source_valid||
     geom->remote_source!=(uint8_t)source)return -2;
- return kt_term_resize_set_policy(g->resize.session,g->resize.scheduler,
+ if(kt_term_geometry_session_snapshot(g,&before)!=0)return -1;
+ rc=kt_term_resize_set_policy(g->resize.session,g->resize.scheduler,
         KT_TERM_GEOMETRY_REMOTE,g->resize.cell_height,g->resize.fb_height,
         g->resize.result);
+ return notify_after(g,&before,rc);
 }
 int kt_term_geometry_session_connect_telnet(kt_term_geometry_session*g,
                                             const uint8_t*data,size_t len){
@@ -87,13 +89,15 @@ int kt_term_geometry_session_connect_ssh(kt_term_geometry_session*g,
 }
 
 int kt_term_geometry_session_activate_viewport(kt_term_geometry_session*g){
- kt_term_geometry *geom;
+ kt_term_geometry *geom;kt_term_geometry_snapshot before;int rc;
  if(!g||!g->resize.session||!g->resize.session->geometry)return -1;
  geom=g->resize.session->geometry;
  if(!geom->viewport_cols||!geom->viewport_rows)return -2;
- return kt_term_resize_set_policy(g->resize.session,g->resize.scheduler,
+ if(kt_term_geometry_session_snapshot(g,&before)!=0)return -1;
+ rc=kt_term_resize_set_policy(g->resize.session,g->resize.scheduler,
         KT_TERM_GEOMETRY_VIEWPORT,g->resize.cell_height,g->resize.fb_height,
         g->resize.result);
+ return notify_after(g,&before,rc);
 }
 int kt_term_geometry_session_connect_viewport(kt_term_geometry_session*g,
                                               const kt_term_viewport*v){
