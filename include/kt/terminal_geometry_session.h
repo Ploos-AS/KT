@@ -4,9 +4,19 @@
 #include <stdint.h>
 #include "kt/terminal_geometry_adapter.h"
 
+typedef void (*kt_term_geometry_notify_fn)(void *,
+                                           const kt_term_geometry_snapshot *,
+                                           const kt_term_geometry_snapshot *);
+
+typedef struct kt_term_geometry_notifier {
+ kt_term_geometry_notify_fn fn;
+ void *ctx;
+} kt_term_geometry_notifier;
+
 typedef struct kt_term_geometry_session {
  kt_term_geometry_event_state events;
  kt_term_geometry_resize_adapter resize;
+ kt_term_geometry_notifier *notifier;
 } kt_term_geometry_session;
 
 int kt_term_geometry_session_init(kt_term_geometry_session *,
@@ -15,6 +25,8 @@ int kt_term_geometry_session_init(kt_term_geometry_session *,
                                   uint8_t,uint16_t,
                                   kt_term_resize_result *);
 void kt_term_geometry_session_reset(kt_term_geometry_session *);
+void kt_term_geometry_session_bind_notifier(kt_term_geometry_session *,
+                                            kt_term_geometry_notifier *);
 int kt_term_geometry_session_telnet_naws(kt_term_geometry_session *,
                                          const uint8_t *,size_t);
 int kt_term_geometry_session_ssh_pty(kt_term_geometry_session *,
@@ -44,15 +56,6 @@ typedef struct kt_term_geometry_snapshot {
 
 int kt_term_geometry_session_snapshot(const kt_term_geometry_session *,
                                       kt_term_geometry_snapshot *);
-typedef void (*kt_term_geometry_notify_fn)(void *,
-                                           const kt_term_geometry_snapshot *,
-                                           const kt_term_geometry_snapshot *);
-
-typedef struct kt_term_geometry_notifier {
- kt_term_geometry_notify_fn fn;
- void *ctx;
-} kt_term_geometry_notifier;
-
 void kt_term_geometry_notifier_init(kt_term_geometry_notifier *,
                                     kt_term_geometry_notify_fn,void *);
 int kt_term_geometry_session_snapshot_changed(const kt_term_geometry_snapshot *,
