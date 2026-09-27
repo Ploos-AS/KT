@@ -44,4 +44,20 @@ typedef struct kt_term_geometry_snapshot {
 
 int kt_term_geometry_session_snapshot(const kt_term_geometry_session *,
                                       kt_term_geometry_snapshot *);
+typedef void (*kt_term_geometry_notify_fn)(void *,
+                                           const kt_term_geometry_snapshot *,
+                                           const kt_term_geometry_snapshot *);
+
+typedef struct kt_term_geometry_notifier {
+ kt_term_geometry_notify_fn fn;
+ void *ctx;
+} kt_term_geometry_notifier;
+
+void kt_term_geometry_notifier_init(kt_term_geometry_notifier *,
+                                    kt_term_geometry_notify_fn,void *);
+int kt_term_geometry_session_snapshot_changed(const kt_term_geometry_snapshot *,
+                                              const kt_term_geometry_snapshot *);
+int kt_term_geometry_session_notify_commit(const kt_term_geometry_session *,
+                                           const kt_term_geometry_snapshot *,
+                                           const kt_term_geometry_notifier *);
 #endif
