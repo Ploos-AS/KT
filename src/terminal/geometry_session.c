@@ -106,3 +106,31 @@ int kt_term_geometry_session_snapshot(const kt_term_geometry_session*g,
   (kt_term_geometry_source)geom->remote_source:KT_TERM_GEOMETRY_SOURCE_LOCAL;
  return 0;
 }
+
+void kt_term_geometry_notifier_init(kt_term_geometry_notifier*n,
+                                    kt_term_geometry_notify_fn fn,void*ctx){
+ if(n){n->fn=fn;n->ctx=ctx;}
+}
+int kt_term_geometry_session_snapshot_changed(const kt_term_geometry_snapshot*a,
+                                              const kt_term_geometry_snapshot*b){
+ if(!a||!b)return -1;
+ return a->policy!=b->policy||a->screen_cols!=b->screen_cols||
+  a->screen_rows!=b->screen_rows||a->viewport_cols!=b->viewport_cols||
+  a->viewport_rows!=b->viewport_rows||a->remote_cols!=b->remote_cols||
+  a->remote_rows!=b->remote_rows||a->remote_valid!=b->remote_valid||
+  a->remote_source_valid!=b->remote_source_valid||
+  (a->remote_source_valid&&b->remote_source_valid&&
+   a->remote_source!=b->remote_source);
+}
+int kt_term_geometry_session_notify_commit(const kt_term_geometry_session*g,
+                                           const kt_term_geometry_snapshot*old,
+                                           const kt_term_geometry_notifier*n){
+ kt_term_geometry_snapshot now;
+ int changed;
+ if(!g||!old||!n)return -1;
+ if(kt_term_geometry_session_snapshot(g,&now)!=0)return -1;
+ changed=kt_term_geometry_session_snapshot_changed(old,&now);
+ if(changed<0)return changed;
+ if(changed&&n->fn)n->fn(n->ctx,old,&now);
+ return changed;
+}
