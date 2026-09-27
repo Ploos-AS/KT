@@ -7,29 +7,46 @@ int kt_term_geometry_session_init(kt_term_geometry_session*g,
                                   kt_term_resize_result*result){
  if(!g||!s||!s->geometry||!s->screen||!cell_height||!fb_height)return -1;
  kt_term_geometry_event_state_reset(&g->events);
+ g->notifier=0;
  kt_term_geometry_resize_adapter_init(&g->resize,s,sched,cell_height,fb_height,result);
  return 0;
 }
 void kt_term_geometry_session_reset(kt_term_geometry_session*g){
  if(g)kt_term_geometry_event_state_reset(&g->events);
 }
+void kt_term_geometry_session_bind_notifier(kt_term_geometry_session*g,
+                                            kt_term_geometry_notifier*n){
+ if(g)g->notifier=n;
+}
+static int notify_after(kt_term_geometry_session*g,
+                        const kt_term_geometry_snapshot*old,int rc){
+ if(rc<0||!g||!g->notifier)return rc;
+ (void)kt_term_geometry_session_notify_commit(g,old,g->notifier);
+ return rc;
+}
 int kt_term_geometry_session_telnet_naws(kt_term_geometry_session*g,
                                          const uint8_t*data,size_t len){
- if(!g)return -1;
- return kt_term_geometry_from_telnet_naws(&g->events,
+ kt_term_geometry_snapshot old;int rc;
+ if(!g||kt_term_geometry_session_snapshot(g,&old)!=0)return -1;
+ rc=kt_term_geometry_from_telnet_naws(&g->events,
         kt_term_geometry_resize_adapter_ops(),&g->resize,data,len);
+ return notify_after(g,&old,rc);
 }
 int kt_term_geometry_session_ssh_pty(kt_term_geometry_session*g,
                                      const uint8_t*data,size_t len){
- if(!g)return -1;
- return kt_term_geometry_from_ssh_pty(&g->events,
+ kt_term_geometry_snapshot old;int rc;
+ if(!g||kt_term_geometry_session_snapshot(g,&old)!=0)return -1;
+ rc=kt_term_geometry_from_ssh_pty(&g->events,
         kt_term_geometry_resize_adapter_ops(),&g->resize,data,len);
+ return notify_after(g,&old,rc);
 }
 int kt_term_geometry_session_viewport(kt_term_geometry_session*g,
                                       const kt_term_viewport*v){
- if(!g)return -1;
- return kt_term_geometry_from_viewport(&g->events,
+ kt_term_geometry_snapshot old;int rc;
+ if(!g||kt_term_geometry_session_snapshot(g,&old)!=0)return -1;
+ rc=kt_term_geometry_from_viewport(&g->events,
         kt_term_geometry_resize_adapter_ops(),&g->resize,v);
+ return notify_after(g,&old,rc);
 }
 int kt_term_geometry_session_disconnect(kt_term_geometry_session*g,
                                         kt_term_geometry_source source){
