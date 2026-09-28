@@ -59,7 +59,9 @@ M2.38 is IMPLEMENTED / CI PENDING: local viewport connect/activation is integrat
 
 M2.39 is IMPLEMENTED / CI PENDING: a read-only session snapshot exposes active policy, actual screen geometry, stored viewport geometry and remote ownership/state without exposing terminal internals, with strict-C99 lifecycle coverage across FIXED, VIEWPORT, REMOTE and disconnect.
 
-M2.40 starts geometry lifecycle notifications: expose a transport/frontend-neutral callback emitted only after a successful committed geometry or policy transition, carrying old/new snapshots so surrounding UI/session code can react without polling or observing partially committed state.
+M2.40 is IMPLEMENTED / CI PENDING: caller-owned lifecycle notifications carry old/new M2.39 snapshots after committed geometry, policy and disconnect transitions; duplicates, validation failures, ownership failures and transactional rollbacks do not notify, with strict-C99 coverage.
+
+M2.41 starts geometry transition classification: derive a small transport-neutral transition kind from old/new snapshots (policy change, screen resize, viewport update, remote ownership/geometry change, disconnect) so notification consumers do not need to duplicate snapshot-diff logic.
 
 Integrate and freeze the W65C265S-based CPU/memory architecture. K8 compatibility is explicitly not a goal and K8 is not changed.
 
