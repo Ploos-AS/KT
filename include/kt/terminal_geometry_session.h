@@ -63,4 +63,17 @@ int kt_term_geometry_session_snapshot_changed(const kt_term_geometry_snapshot *,
 int kt_term_geometry_session_notify_commit(const kt_term_geometry_session *,
                                            const kt_term_geometry_snapshot *,
                                            const kt_term_geometry_notifier *);
+typedef enum kt_term_geometry_transition {
+ KT_TERM_GEOMETRY_TRANSITION_NONE=0,
+ KT_TERM_GEOMETRY_TRANSITION_POLICY=1u<<0,
+ KT_TERM_GEOMETRY_TRANSITION_SCREEN=1u<<1,
+ KT_TERM_GEOMETRY_TRANSITION_VIEWPORT=1u<<2,
+ KT_TERM_GEOMETRY_TRANSITION_REMOTE=1u<<3,
+ KT_TERM_GEOMETRY_TRANSITION_OWNERSHIP=1u<<4,
+ KT_TERM_GEOMETRY_TRANSITION_DISCONNECT=1u<<5
+} kt_term_geometry_transition;
+
+int kt_term_geometry_transition_classify(const kt_term_geometry_snapshot *,
+                                         const kt_term_geometry_snapshot *,
+                                         uint32_t *);
 #endif
