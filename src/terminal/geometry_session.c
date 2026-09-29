@@ -155,3 +155,26 @@ int kt_term_geometry_session_notify_commit(const kt_term_geometry_session*g,
  if(changed&&n->fn)n->fn(n->ctx,old,&now);
  return changed;
 }
+
+int kt_term_geometry_transition_classify(const kt_term_geometry_snapshot*a,
+                                         const kt_term_geometry_snapshot*b,
+                                         uint32_t*flags){
+ uint32_t f=0;
+ if(!a||!b||!flags)return -1;
+ if(a->policy!=b->policy)f|=KT_TERM_GEOMETRY_TRANSITION_POLICY;
+ if(a->screen_cols!=b->screen_cols||a->screen_rows!=b->screen_rows)
+  f|=KT_TERM_GEOMETRY_TRANSITION_SCREEN;
+ if(a->viewport_cols!=b->viewport_cols||a->viewport_rows!=b->viewport_rows)
+  f|=KT_TERM_GEOMETRY_TRANSITION_VIEWPORT;
+ if(a->remote_cols!=b->remote_cols||a->remote_rows!=b->remote_rows||
+    a->remote_valid!=b->remote_valid)
+  f|=KT_TERM_GEOMETRY_TRANSITION_REMOTE;
+ if(a->remote_source_valid!=b->remote_source_valid||
+    (a->remote_source_valid&&b->remote_source_valid&&
+     a->remote_source!=b->remote_source))
+  f|=KT_TERM_GEOMETRY_TRANSITION_OWNERSHIP;
+ if(a->remote_source_valid&&!b->remote_source_valid)
+  f|=KT_TERM_GEOMETRY_TRANSITION_DISCONNECT;
+ *flags=f;
+ return 0;
+}
