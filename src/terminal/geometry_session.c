@@ -147,12 +147,16 @@ int kt_term_geometry_session_notify_commit(const kt_term_geometry_session*g,
                                            const kt_term_geometry_snapshot*old,
                                            const kt_term_geometry_notifier*n){
  kt_term_geometry_snapshot now;
+ uint32_t flags=0;
  int changed;
  if(!g||!old||!n)return -1;
  if(kt_term_geometry_session_snapshot(g,&now)!=0)return -1;
  changed=kt_term_geometry_session_snapshot_changed(old,&now);
  if(changed<0)return changed;
- if(changed&&n->fn)n->fn(n->ctx,old,&now);
+ if(changed&&n->fn){
+  if(kt_term_geometry_transition_classify(old,&now,&flags)!=0)return -1;
+  n->fn(n->ctx,old,&now,flags);
+ }
  return changed;
 }
 
