@@ -35,10 +35,16 @@ typedef struct kt_term_geometry_notifier {
  uint32_t filter;
 } kt_term_geometry_notifier;
 
+typedef struct kt_term_geometry_notifier_set {
+ kt_term_geometry_notifier *items;
+ size_t count;
+} kt_term_geometry_notifier_set;
+
 typedef struct kt_term_geometry_session {
  kt_term_geometry_event_state events;
  kt_term_geometry_resize_adapter resize;
  kt_term_geometry_notifier *notifier;
+ kt_term_geometry_notifier_set *notifiers;
 } kt_term_geometry_session;
 
 int kt_term_geometry_session_init(kt_term_geometry_session *,
@@ -49,6 +55,10 @@ int kt_term_geometry_session_init(kt_term_geometry_session *,
 void kt_term_geometry_session_reset(kt_term_geometry_session *);
 void kt_term_geometry_session_bind_notifier(kt_term_geometry_session *,
                                             kt_term_geometry_notifier *);
+void kt_term_geometry_notifier_set_init(kt_term_geometry_notifier_set *,
+                                        kt_term_geometry_notifier *,size_t);
+void kt_term_geometry_session_bind_notifier_set(kt_term_geometry_session *,
+                                                kt_term_geometry_notifier_set *);
 int kt_term_geometry_session_telnet_naws(kt_term_geometry_session *,
                                          const uint8_t *,size_t);
 int kt_term_geometry_session_ssh_pty(kt_term_geometry_session *,
