@@ -132,6 +132,12 @@ void kt_term_geometry_notifier_init(kt_term_geometry_notifier*n,
                                     kt_term_geometry_notify_fn fn,void*ctx){
  if(n){n->fn=fn;n->ctx=ctx;n->filter=0xffffffffu;}
 }
+void kt_term_geometry_notifier_set_init(kt_term_geometry_notifier_set*s,kt_term_geometry_notifier*items,size_t count){
+ if(s){s->items=items;s->count=items?count:0;}
+}
+void kt_term_geometry_session_bind_notifier_set(kt_term_geometry_session*gs,kt_term_geometry_notifier_set*s){
+ if(gs)gs->notifiers=s;
+}
 void kt_term_geometry_notifier_set_filter(kt_term_geometry_notifier*n,uint32_t filter){
  if(n)n->filter=filter;
 }
@@ -156,9 +162,16 @@ int kt_term_geometry_session_notify_commit(const kt_term_geometry_session*g,
  if(kt_term_geometry_session_snapshot(g,&now)!=0)return -1;
  changed=kt_term_geometry_session_snapshot_changed(old,&now);
  if(changed<0)return changed;
- if(changed&&n->fn){
+ if(changed){
+  size_t i;
   if(kt_term_geometry_transition_classify(old,&now,&flags)!=0)return -1;
-  if(flags&n->filter)n->fn(n->ctx,old,&now,flags);
+  if(n&&n->fn&&(flags&n->filter))n->fn(n->ctx,old,&now,flags);
+  if(gs->notifiers&&gs->notifiers->items){
+   for(i=0;i<gs->notifiers->count;i++){
+    kt_term_geometry_notifier*x=&gs->notifiers->items[i];
+    if(x->fn&&(flags&x->filter))x->fn(x->ctx,old,&now,flags);
+   }
+  }
  }
  return changed;
 }
