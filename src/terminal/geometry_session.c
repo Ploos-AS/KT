@@ -130,7 +130,10 @@ int kt_term_geometry_session_snapshot(const kt_term_geometry_session*g,
 
 void kt_term_geometry_notifier_init(kt_term_geometry_notifier*n,
                                     kt_term_geometry_notify_fn fn,void*ctx){
- if(n){n->fn=fn;n->ctx=ctx;}
+ if(n){n->fn=fn;n->ctx=ctx;n->filter=0xffffffffu;}
+}
+void kt_term_geometry_notifier_set_filter(kt_term_geometry_notifier*n,uint32_t filter){
+ if(n)n->filter=filter;
 }
 int kt_term_geometry_session_snapshot_changed(const kt_term_geometry_snapshot*a,
                                               const kt_term_geometry_snapshot*b){
@@ -155,7 +158,7 @@ int kt_term_geometry_session_notify_commit(const kt_term_geometry_session*g,
  if(changed<0)return changed;
  if(changed&&n->fn){
   if(kt_term_geometry_transition_classify(old,&now,&flags)!=0)return -1;
-  n->fn(n->ctx,old,&now,flags);
+  if(flags&n->filter)n->fn(n->ctx,old,&now,flags);
  }
  return changed;
 }
