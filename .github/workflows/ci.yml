@@ -344,3 +344,13 @@ jobs:
               src/terminal/dirty.c src/terminal/scheduler.c "$test" -o "$out"
             "$out"
           done
+
+      - name: Test M2.41 geometry transition classification
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry_session.c src/terminal/geometry_adapter.c \
+            src/terminal/geometry_event.c src/terminal/geometry.c \
+            src/terminal/viewport.c src/terminal/session.c src/terminal/resize.c \
+            src/terminal/dirty.c src/terminal/scheduler.c \
+            tests/test_m2_41_geometry_transition.c -o /tmp/test_m2_41
+          /tmp/test_m2_41
