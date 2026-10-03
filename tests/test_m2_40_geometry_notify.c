@@ -3,8 +3,8 @@
 #include "kt/terminal_geometry_session.h"
 typedef struct trace { int count; kt_term_geometry_snapshot oldv,newv; } trace;
 static void on_change(void*ctx,const kt_term_geometry_snapshot*o,
-                      const kt_term_geometry_snapshot*n){
- trace*t=(trace*)ctx;t->count++;t->oldv=*o;t->newv=*n;
+                      const kt_term_geometry_snapshot*n,uint32_t flags){
+ trace*t=(trace*)ctx;t->count++;t->oldv=*o;t->newv=*n;(void)flags;
 }
 int main(void){
  kt_term_geometry g;kt_term_screen screen;kt_term_session session;
