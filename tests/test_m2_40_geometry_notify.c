@@ -1,10 +1,10 @@
 #include <assert.h>
 #include <string.h>
 #include "kt/terminal_geometry_session.h"
-typedef struct trace { int count; kt_term_geometry_snapshot oldv,newv; } trace;
+typedef struct trace { int count; kt_term_geometry_snapshot oldv,newv; uint32_t flags[8]; } trace;
 static void on_change(void*ctx,const kt_term_geometry_snapshot*o,
                       const kt_term_geometry_snapshot*n,uint32_t flags){
- trace*t=(trace*)ctx;t->count++;t->oldv=*o;t->newv=*n;(void)flags;
+ trace*t=(trace*)ctx;t->oldv=*o;t->newv=*n;t->flags[t->count]=flags;t->count++;
 }
 int main(void){
  kt_term_geometry g;kt_term_screen screen;kt_term_session session;
@@ -25,6 +25,8 @@ int main(void){
     remote geometry/ownership, then REMOTE policy activation. */
  assert(kt_term_geometry_session_connect_telnet(&gs,tel100,4)==0);
  assert(tr.count==2);
+ assert(tr.flags[0]==(KT_TERM_GEOMETRY_TRANSITION_REMOTE|KT_TERM_GEOMETRY_TRANSITION_OWNERSHIP));
+ assert(tr.flags[1]==(KT_TERM_GEOMETRY_TRANSITION_POLICY|KT_TERM_GEOMETRY_TRANSITION_SCREEN));
  assert(tr.newv.policy==KT_TERM_GEOMETRY_REMOTE);
  assert(tr.newv.screen_cols==100&&tr.newv.screen_rows==40);
 
@@ -39,6 +41,7 @@ int main(void){
  /* Disconnect is one committed transition. */
  assert(kt_term_geometry_session_disconnect(&gs,KT_TERM_GEOMETRY_SOURCE_TELNET_NAWS)==0);
  assert(tr.count==3);
+ assert(tr.flags[2]==(KT_TERM_GEOMETRY_TRANSITION_POLICY|KT_TERM_GEOMETRY_TRANSITION_SCREEN|KT_TERM_GEOMETRY_TRANSITION_REMOTE|KT_TERM_GEOMETRY_TRANSITION_OWNERSHIP|KT_TERM_GEOMETRY_TRANSITION_DISCONNECT));
  assert(tr.oldv.policy==KT_TERM_GEOMETRY_REMOTE);
  assert(tr.newv.policy==KT_TERM_GEOMETRY_FIXED);
 
@@ -46,6 +49,8 @@ int main(void){
  assert(kt_term_viewport_init(&vp,640,480,8,16)==0);
  assert(kt_term_geometry_session_connect_viewport(&gs,&vp)==0);
  assert(tr.count==5);
+ assert(tr.flags[3]==KT_TERM_GEOMETRY_TRANSITION_VIEWPORT);
+ assert(tr.flags[4]==(KT_TERM_GEOMETRY_TRANSITION_POLICY|KT_TERM_GEOMETRY_TRANSITION_SCREEN));
  assert(tr.newv.policy==KT_TERM_GEOMETRY_VIEWPORT);
  assert(tr.newv.screen_cols==80&&tr.newv.screen_rows==30);
  return 0;
