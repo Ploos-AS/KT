@@ -63,7 +63,7 @@ M2.40 is IMPLEMENTED / CI PENDING: caller-owned lifecycle notifications carry ol
 
 M2.41 is IMPLEMENTED / CI PENDING: transport-neutral combinable transition flags classify policy, screen, viewport, remote geometry, ownership and disconnect changes from M2.39 snapshots; M2.40 notifications carry the flags directly, with strict-C99 exact-flag coverage.
 
-M2.42 starts geometry notification filtering: allow a notifier to subscribe to selected M2.41 transition flags so UI, transport and session consumers receive only relevant committed changes without duplicating filtering logic.
+M2.42 is IMPLEMENTED / CI PENDING: geometry notifiers have a transition filter mask, defaulting to all transitions; consumers can subscribe to selected M2.41 classes while callbacks retain the complete transition mask. Zero-mask suppression does not affect state commits. Strict-C99 coverage includes UI/transport filters and multi-flag transitions.\n\nM2.43 starts geometry notification fan-out: support multiple independent filtered subscribers so UI, transport, diagnostics and session consumers can observe the same committed transition without building an external dispatcher.
 
 Integrate and freeze the W65C265S-based CPU/memory architecture. K8 compatibility is explicitly not a goal and K8 is not changed.
 
