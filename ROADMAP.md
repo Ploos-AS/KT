@@ -61,7 +61,9 @@ M2.39 is IMPLEMENTED / CI PENDING: a read-only session snapshot exposes active p
 
 M2.40 is IMPLEMENTED / CI PENDING: caller-owned lifecycle notifications carry old/new M2.39 snapshots after committed geometry, policy and disconnect transitions; duplicates, validation failures, ownership failures and transactional rollbacks do not notify, with strict-C99 coverage.
 
-M2.41 starts geometry transition classification: derive a small transport-neutral transition kind from old/new snapshots (policy change, screen resize, viewport update, remote ownership/geometry change, disconnect) so notification consumers do not need to duplicate snapshot-diff logic.
+M2.41 is IMPLEMENTED / CI PENDING: transport-neutral combinable transition flags classify policy, screen, viewport, remote geometry, ownership and disconnect changes from M2.39 snapshots; M2.40 notifications carry the flags directly, with strict-C99 exact-flag coverage.
+
+M2.42 starts geometry notification filtering: allow a notifier to subscribe to selected M2.41 transition flags so UI, transport and session consumers receive only relevant committed changes without duplicating filtering logic.
 
 Integrate and freeze the W65C265S-based CPU/memory architecture. K8 compatibility is explicitly not a goal and K8 is not changed.
 
