@@ -32,6 +32,7 @@ typedef void (*kt_term_geometry_notify_fn)(void *,
 typedef struct kt_term_geometry_notifier {
  kt_term_geometry_notify_fn fn;
  void *ctx;
+ uint32_t filter;
 } kt_term_geometry_notifier;
 
 typedef struct kt_term_geometry_session {
@@ -69,6 +70,7 @@ int kt_term_geometry_session_snapshot(const kt_term_geometry_session *,
                                       kt_term_geometry_snapshot *);
 void kt_term_geometry_notifier_init(kt_term_geometry_notifier *,
                                     kt_term_geometry_notify_fn,void *);
+void kt_term_geometry_notifier_set_filter(kt_term_geometry_notifier *,uint32_t);
 int kt_term_geometry_session_snapshot_changed(const kt_term_geometry_snapshot *,
                                               const kt_term_geometry_snapshot *);
 int kt_term_geometry_session_notify_commit(const kt_term_geometry_session *,
