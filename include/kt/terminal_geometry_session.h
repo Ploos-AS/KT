@@ -38,6 +38,7 @@ typedef struct kt_term_geometry_notifier {
 typedef struct kt_term_geometry_notifier_set {
  kt_term_geometry_notifier *items;
  size_t count;
+ size_t capacity;
 } kt_term_geometry_notifier_set;
 
 typedef struct kt_term_geometry_session {
@@ -57,6 +58,9 @@ void kt_term_geometry_session_bind_notifier(kt_term_geometry_session *,
                                             kt_term_geometry_notifier *);
 void kt_term_geometry_notifier_set_init(kt_term_geometry_notifier_set *,
                                         kt_term_geometry_notifier *,size_t);
+int kt_term_geometry_notifier_set_add(kt_term_geometry_notifier_set *,
+                                      const kt_term_geometry_notifier *,size_t *);
+int kt_term_geometry_notifier_set_remove(kt_term_geometry_notifier_set *,size_t);
 void kt_term_geometry_session_bind_notifier_set(kt_term_geometry_session *,
                                                 kt_term_geometry_notifier_set *);
 int kt_term_geometry_session_telnet_naws(kt_term_geometry_session *,
