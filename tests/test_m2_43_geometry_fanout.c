@@ -10,10 +10,10 @@ int main(void){
  kt_term_geometry g;kt_term_screen screen;kt_term_session session;
  kt_term_cell cells[132*43];kt_term_present_scheduler sched;
  kt_term_resize_result result;kt_term_geometry_session gs;
- kt_term_geometry_notifier ns[3];kt_term_geometry_notifier_set set;
+ kt_term_geometry_notifier ns[3],slots[3];kt_term_geometry_notifier_set set;
  trace ui={0,0},transport={0,0},diag={0,0};
  const uint8_t tel100[4]={0,100,0,40};
- memset(&screen,0,sizeof(screen));
+ memset(&screen,0,sizeof(screen));memset(slots,0,sizeof(slots));
  assert(kt_term_geometry_init(&g,80,25)==0);
  assert(kt_term_session_init(&session,&g,&screen,cells,132*43)==0);
  kt_term_present_scheduler_reset(&sched);
@@ -26,7 +26,10 @@ int main(void){
                                                KT_TERM_GEOMETRY_TRANSITION_OWNERSHIP|
                                                KT_TERM_GEOMETRY_TRANSITION_DISCONNECT);
  kt_term_geometry_notifier_init(&ns[2],cb,&diag);
- kt_term_geometry_notifier_set_init(&set,ns,3);
+ kt_term_geometry_notifier_set_init(&set,slots,3);
+ assert(kt_term_geometry_notifier_set_add(&set,&ns[0],0)==0);
+ assert(kt_term_geometry_notifier_set_add(&set,&ns[1],0)==0);
+ assert(kt_term_geometry_notifier_set_add(&set,&ns[2],0)==0);
  kt_term_geometry_session_bind_notifier_set(&gs,&set);
 
  assert(kt_term_geometry_session_connect_telnet(&gs,tel100,4)==0);
