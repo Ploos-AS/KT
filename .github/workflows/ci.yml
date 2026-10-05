@@ -374,3 +374,13 @@ jobs:
             src/terminal/dirty.c src/terminal/scheduler.c \
             tests/test_m2_43_geometry_fanout.c -o /tmp/test_m2_43
           /tmp/test_m2_43
+
+      - name: Test M2.44 geometry subscription management
+        run: |
+          cc -std=c99 -Wall -Wextra -Werror -pedantic -Iinclude \
+            src/terminal/geometry_session.c src/terminal/geometry_adapter.c \
+            src/terminal/geometry_event.c src/terminal/geometry.c \
+            src/terminal/viewport.c src/terminal/session.c src/terminal/resize.c \
+            src/terminal/dirty.c src/terminal/scheduler.c \
+            tests/test_m2_44_geometry_subscriptions.c -o /tmp/test_m2_44
+          /tmp/test_m2_44
