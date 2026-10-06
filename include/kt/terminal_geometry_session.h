@@ -39,6 +39,7 @@ typedef struct kt_term_geometry_notifier_set {
  kt_term_geometry_notifier *items;
  size_t count;
  size_t capacity;
+ unsigned long generation;
 } kt_term_geometry_notifier_set;
 
 typedef struct kt_term_geometry_session {
