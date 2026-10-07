@@ -27,7 +27,7 @@ typedef enum kt_term_geometry_transition {
 typedef void (*kt_term_geometry_notify_fn)(void *,
                                            const kt_term_geometry_snapshot *,
                                            const kt_term_geometry_snapshot *,
-                                           uint32_t);
+                                           uint32_t,uint32_t);
 
 typedef struct kt_term_geometry_notifier {
  kt_term_geometry_notify_fn fn;
@@ -47,6 +47,7 @@ typedef struct kt_term_geometry_session {
  kt_term_geometry_resize_adapter resize;
  kt_term_geometry_notifier *notifier;
  kt_term_geometry_notifier_set *notifiers;
+ uint32_t notify_sequence;
 } kt_term_geometry_session;
 
 int kt_term_geometry_session_init(kt_term_geometry_session *,
