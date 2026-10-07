@@ -2,14 +2,14 @@
 #include <string.h>
 #include "kt/terminal_geometry_session.h"
 typedef struct ctx{kt_term_geometry_notifier_set*s;size_t self_id;kt_term_geometry_notifier add;int count;int action;}ctx;
-static void mut(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f){
- ctx*c=(ctx*)v;(void)o;(void)n;(void)f;c->count++;
+static void mut(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f,uint32_t sequence){
+ ctx*c=(ctx*)v;(void)o;(void)n;(void)f;(void)sequence;c->count++;
  if(c->action==1)assert(kt_term_geometry_notifier_set_remove(c->s,c->self_id)==0);
  else if(c->action==2)assert(kt_term_geometry_notifier_set_remove(c->s,c->self_id+1)==0);
  else if(c->action==3)assert(kt_term_geometry_notifier_set_add(c->s,&c->add,0)==0);
 }
-static void hit(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f){
- ctx*c=(ctx*)v;(void)o;(void)n;(void)f;c->count++;
+static void hit(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f,uint32_t sequence){
+ ctx*c=(ctx*)v;(void)o;(void)n;(void)f;(void)sequence;c->count++;
 }
 static void setup(kt_term_geometry_session*gs,kt_term_geometry*g,kt_term_screen*screen,
  kt_term_session*session,kt_term_cell*cells,kt_term_present_scheduler*sched,kt_term_resize_result*r){
