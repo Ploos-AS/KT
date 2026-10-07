@@ -3,8 +3,8 @@
 #include "kt/terminal_geometry_session.h"
 typedef struct trace { int count; } trace;
 static void cb(void*ctx,const kt_term_geometry_snapshot*o,
- const kt_term_geometry_snapshot*n,uint32_t f){
- trace*t=(trace*)ctx;(void)o;(void)n;(void)f;t->count++;
+ const kt_term_geometry_snapshot*n,uint32_t f,uint32_t sequence){
+ trace*t=(trace*)ctx;(void)o;(void)n;(void)f;(void)sequence;t->count++;
 }
 int main(void){
  kt_term_geometry_notifier slots[2],a,b,c;kt_term_geometry_notifier_set set;
