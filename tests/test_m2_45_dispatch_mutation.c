@@ -2,14 +2,14 @@
 #include <string.h>
 #include "kt/terminal_geometry_session.h"
 typedef struct mutctx{kt_term_geometry_notifier_set*s;size_t id;kt_term_geometry_notifier add;int count;int mode;}mutctx;
-static void cb(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f){
- mutctx*c=(mutctx*)v;(void)o;(void)n;(void)f;c->count++;
+static void cb(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f,uint32_t sequence){
+ mutctx*c=(mutctx*)v;(void)o;(void)n;(void)f;(void)sequence;c->count++;
  if(c->mode==1)assert(kt_term_geometry_notifier_set_remove(c->s,c->id)==0);
  else if(c->mode==2)assert(kt_term_geometry_notifier_set_remove(c->s,c->id+1)==0);
  else if(c->mode==3)assert(kt_term_geometry_notifier_set_add(c->s,&c->add,0)==0);
 }
-static void plain(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f){
- mutctx*c=(mutctx*)v;(void)o;(void)n;(void)f;c->count++;
+static void plain(void*v,const kt_term_geometry_snapshot*o,const kt_term_geometry_snapshot*n,uint32_t f,uint32_t sequence){
+ mutctx*c=(mutctx*)v;(void)o;(void)n;(void)f;(void)sequence;c->count++;
 }
 int main(void){
  kt_term_geometry_notifier slots[3],a,b,x;kt_term_geometry_notifier_set s;
