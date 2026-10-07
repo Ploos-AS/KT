@@ -178,14 +178,16 @@ int kt_term_geometry_session_notify_commit(const kt_term_geometry_session*g,
  if(changed<0)return changed;
  if(changed){
   size_t i;
+  uint32_t sequence=++gs->notify_sequence;
+  if(sequence==0)sequence=++gs->notify_sequence;
   if(kt_term_geometry_transition_classify(old,&now,&flags)!=0)return -1;
-  if(n&&n->fn&&(flags&n->filter))n->fn(n->ctx,old,&now,flags);
+  if(n&&n->fn&&(flags&n->filter))n->fn(n->ctx,old,&now,flags,sequence);
   if(gs->notifiers&&gs->notifiers->items){
    size_t dispatch_count=gs->notifiers->count;
    unsigned long dispatch_generation=gs->notifiers->generation;
    for(i=0;i<dispatch_count;i++){
     kt_term_geometry_notifier x=gs->notifiers->items[i];
-    if(x.fn&&(flags&x.filter))x.fn(x.ctx,old,&now,flags);
+    if(x.fn&&(flags&x.filter))x.fn(x.ctx,old,&now,flags,sequence);
     if(gs->notifiers->generation!=dispatch_generation)break;
    }
   }
